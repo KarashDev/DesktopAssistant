@@ -19,7 +19,7 @@
             <Button x:Name="button_Clipboard_4" Content="" HorizontalAlignment="Left" Margin="212,189,0,0" VerticalAlignment="Top" Height="31" Width="31" Click="button_Clipboard_4_Click"/>
             <TextBox x:Name="textBox_Clipboard_5" HorizontalAlignment="Left" Margin="10,241,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" TextChanged="textBox_Clipboard_5_TextChanged"/>
             <Button x:Name="button_Clipboard_5" Content="" HorizontalAlignment="Left" Margin="212,243,0,0" VerticalAlignment="Top" Height="31" Width="31" Click="button_Clipboard_5_Click"/>
-            <CheckBox x:Name="checkBox_Encrypt" Content="Encrypt " HorizontalAlignment="Left" Margin="34,10,0,0" VerticalAlignment="Top" Checked="checkBox_Encrypt__Checked" Unchecked="checkBox_Encrypt__Unchecked"/>
+            <CheckBox x:Name="checkBox_Encrypt" Content="Encrypt " HorizontalAlignment="Left" Margin="34,10,0,0" VerticalAlignment="Top" Checked="checkBox_Encrypt_Checked" Unchecked="checkBox_Encrypt_Unchecked"/>
         </Grid>
         <Grid x:Name="grid_taskList" Margin="278,58,21,41"/>
     </Grid>
