@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopAssistant"
         mc:Ignorable="d"
-        Title="DateTimeWindow" Height="227" Width="235" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" Background="Black">
+        Title="DateTimeWindow" Height="227" Width="235" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Background="Black" Focusable="False">
     <Grid>
         <Label x:Name="label_Date" Content="25.11.21" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,61,0,0" VerticalAlignment="Top" Background="Transparent" Foreground="AliceBlue" FontSize="25"/>
         <Label x:Name="label_DayOfWeek" Content="Friday" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Background="Transparent" Foreground="AliceBlue" FontSize="20" Margin="0,107,0,0"/>

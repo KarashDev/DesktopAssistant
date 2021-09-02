@@ -22,8 +22,6 @@ namespace DesktopAssistant
     /// </summary>
     public partial class DateTimeWindow : Window
     {
-
-
         public DateTimeWindow()
         {
             InitializeComponent();
@@ -41,7 +39,7 @@ namespace DesktopAssistant
             {
                 label_Time.Content = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
             };
-            
+
 
             label_Date.Content = DateTime.Now.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
             label_DayOfWeek.Content = DateTime.Now.DayOfWeek.ToString();
@@ -52,13 +50,15 @@ namespace DesktopAssistant
 
             try
             {
+                WeatherDataHandler.GetApiJsonData();
+
                 var oneHourTimer = new System.Windows.Threading.DispatcherTimer
                 {
                     Interval = new TimeSpan(1, 0, 0)
                 };
                 oneHourTimer.Tick += (o, t) =>
                 {
-                    //WeatherDataHandler.GetApiJsonData();
+                    WeatherDataHandler.GetApiJsonData();
                 };
                 oneHourTimer.Start();
 
@@ -72,15 +72,13 @@ namespace DesktopAssistant
                 {
                     label_maxTempToday.Content = "*no weather data*";
                     label_minTempToday.Content = $"";
-                } 
+                }
             }
             catch (Exception)
             {
                 label_maxTempToday.Content = "*error loading data*";
                 label_minTempToday.Content = $"";
             }
-
-
         }
     }
 }

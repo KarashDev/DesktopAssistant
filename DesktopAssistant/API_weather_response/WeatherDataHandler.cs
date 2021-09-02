@@ -36,7 +36,6 @@ namespace DesktopAssistant.API_weather_response
 
 
         static string jsonResponseFromServer;
-        static WeatherDataHandler.JsonWeatherMainTable weatherResponse;
 
        
         // Конкретные десериализированные данные, которые отправляются к контролам формы
@@ -47,11 +46,11 @@ namespace DesktopAssistant.API_weather_response
         public static void GetApiJsonData()
         {
             // Срок прогноза в днях (limit) не работает
-            var weatherApiUrl = String.Format(CultureInfo.InvariantCulture, "https://api.weather.yandex.ru/v2/informers?lat={0}&lon={1}&lang=en_US&limit=5", 51.46, 55.06);
+            var weatherApiUrl = String.Format(CultureInfo.InvariantCulture, "https://api.weather.yandex.ru/v2/informers?lat={0}&lon={1}", 51.46, 55.06);
 
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(weatherApiUrl);
 
-            httpWebRequest.Headers["X-Yandex-API-Key"] = "131eef81-c0fa-4c58-8b8e-d9e20983bbc6";
+            httpWebRequest.Headers["X-Yandex-API-Key"] = "34082f29-3bb2-4404-b057-1995f3441697";
 
             HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
 
