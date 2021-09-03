@@ -66,40 +66,38 @@ namespace DesktopAssistant
             }
         }
 
+
+
         // Сохранение введенного текста в файл настроек, чтобы он сохранился даже при перезапуске программы
-        private void textBox_Clipboard_1_TextChanged(object sender, TextChangedEventArgs e)
+        private void textBox_Clipboard_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!isTextEncrypted)
+            Control control = (Control)sender;
+
+            switch (control.Name)
             {
-                Properties.Settings.Default.Clipboard_1 = textBox_Clipboard_1.Text;
-            }
-        }
-        private void textBox_Clipboard_2_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!isTextEncrypted)
-            {
-                Properties.Settings.Default.Clipboard_2 = textBox_Clipboard_2.Text;
-            }
-        }
-        private void textBox_Clipboard_3_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!isTextEncrypted)
-            {
-                Properties.Settings.Default.Clipboard_3 = textBox_Clipboard_3.Text;
-            }
-        }
-        private void textBox_Clipboard_4_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!isTextEncrypted)
-            {
-                Properties.Settings.Default.Clipboard_4 = textBox_Clipboard_4.Text;
-            }
-        }
-        private void textBox_Clipboard_5_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!isTextEncrypted)
-            {
-                Properties.Settings.Default.Clipboard_5 = textBox_Clipboard_5.Text;
+                case "textBox_Clipboard_1":
+                    if (!isTextEncrypted)
+                        Properties.Settings.Default.Clipboard_1 = textBox_Clipboard_1.Text;
+                    break;
+                case "textBox_Clipboard_2":
+                    if (!isTextEncrypted)
+                        Properties.Settings.Default.Clipboard_2 = textBox_Clipboard_2.Text;
+                    break;
+                case "textBox_Clipboard_3":
+                    if (!isTextEncrypted)
+                        Properties.Settings.Default.Clipboard_3 = textBox_Clipboard_3.Text;
+                    break;
+                case "textBox_Clipboard_4":
+                    if (!isTextEncrypted)
+                        Properties.Settings.Default.Clipboard_4 = textBox_Clipboard_4.Text;
+                    break;
+                case "textBox_Clipboard_5":
+                    if (!isTextEncrypted)
+                        Properties.Settings.Default.Clipboard_5 = textBox_Clipboard_5.Text;
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -110,25 +108,32 @@ namespace DesktopAssistant
             Clipboard.Clear();
             Clipboard.SetText(text);
         }
-        private void button_Clipboard_1_Click(object sender, RoutedEventArgs e)
+
+        private void button_Clipboard_Click(object sender, RoutedEventArgs e)
         {
-            SaveTextToClipBoard(textBox_Clipboard_1.Text);
-        }
-        private void button_Clipboard_2_Click(object sender, RoutedEventArgs e)
-        {
-            SaveTextToClipBoard(textBox_Clipboard_2.Text);
-        }
-        private void button_Clipboard_3_Click(object sender, RoutedEventArgs e)
-        {
-            SaveTextToClipBoard(textBox_Clipboard_3.Text);
-        }
-        private void button_Clipboard_4_Click(object sender, RoutedEventArgs e)
-        {
-            SaveTextToClipBoard(textBox_Clipboard_4.Text);
-        }
-        private void button_Clipboard_5_Click(object sender, RoutedEventArgs e)
-        {
-            SaveTextToClipBoard(textBox_Clipboard_5.Text);
+            Control control = (Control)sender;
+
+            switch (control.Name)
+            {
+                case "button_Clipboard_1":
+                    SaveTextToClipBoard(textBox_Clipboard_1.Text);
+                    break;
+                case "button_Clipboard_2":
+                    SaveTextToClipBoard(textBox_Clipboard_2.Text);
+                    break;
+                case "button_Clipboard_3":
+                    SaveTextToClipBoard(textBox_Clipboard_3.Text);
+                    break;
+                case "button_Clipboard_4":
+                    SaveTextToClipBoard(textBox_Clipboard_4.Text);
+                    break;
+                case "button_Clipboard_5":
+                    SaveTextToClipBoard(textBox_Clipboard_5.Text);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         // При активации весь текст в строках шифруется
@@ -198,14 +203,13 @@ namespace DesktopAssistant
                     }
                 };
 
-
             }
         }
 
 
         public event EventHandler tasklistTextChanged;
 
-        private void textBox_Tasklist_1_TextChanged(object sender, TextChangedEventArgs e)
+        private void textBox_Tasklist_TextChanged(object sender, TextChangedEventArgs e)
         {
             tasklistTextChanged += (s, e) =>
             {
@@ -219,10 +223,62 @@ namespace DesktopAssistant
 
         }
 
-        private void button_Tasklist_1_Done_Click(object sender, RoutedEventArgs e)
+        private void button_Tasklist_Done_Click(object sender, RoutedEventArgs e)
         {
             textBox_Tasklist_1.Foreground = Brushes.LightGreen;
             textBox_Tasklist_1.IsEnabled = false;
+
+            //Control control = (Control)sender;
+
+            //switch (control.Name)
+            //{
+            //    case "button_Clipboard_1":
+            //        SaveTextToClipBoard(textBox_Clipboard_1.Text);
+            //        break;
+            //    case "button_Clipboard_2":
+            //        SaveTextToClipBoard(textBox_Clipboard_2.Text);
+            //        break;
+            //    case "button_Clipboard_3":
+            //        SaveTextToClipBoard(textBox_Clipboard_3.Text);
+            //        break;
+            //    case "button_Clipboard_4":
+            //        SaveTextToClipBoard(textBox_Clipboard_4.Text);
+            //        break;
+            //    case "button_Clipboard_5":
+            //        SaveTextToClipBoard(textBox_Clipboard_5.Text);
+            //        break;
+
+            //    default:
+            //        break;
+            //}
+
+        }
+
+        private void button_Tasklist_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            //Control control = (Control)sender;
+
+            //switch (control.Name)
+            //{
+            //    case "button_Clipboard_1":
+            //        SaveTextToClipBoard(textBox_Clipboard_1.Text);
+            //        break;
+            //    case "button_Clipboard_2":
+            //        SaveTextToClipBoard(textBox_Clipboard_2.Text);
+            //        break;
+            //    case "button_Clipboard_3":
+            //        SaveTextToClipBoard(textBox_Clipboard_3.Text);
+            //        break;
+            //    case "button_Clipboard_4":
+            //        SaveTextToClipBoard(textBox_Clipboard_4.Text);
+            //        break;
+            //    case "button_Clipboard_5":
+            //        SaveTextToClipBoard(textBox_Clipboard_5.Text);
+            //        break;
+
+            //    default:
+            //        break;
+            //}
 
         }
     }
