@@ -35,10 +35,10 @@ namespace DesktopAssistant
                 Interval = new TimeSpan(0, 0, 1)
             };
             secondsTimer.Start();
-            secondsTimer.Tick += (o, t) =>
-            {
-                label_Time.Content = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
-            };
+            //secondsTimer.Tick += (o, t) =>
+            //{
+            //    label_Time.Content = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+            //};
 
 
             label_Date.Content = DateTime.Now.ToString("dd.MM.yy", CultureInfo.InvariantCulture);

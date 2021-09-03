@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +23,12 @@ namespace DesktopAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly DateTimeWindow dateTimeWindow;
+        private DateTimeWindow dateTimeWindow;
         bool isTextEncrypted = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            dateTimeWindow = new DateTimeWindow();
 
             textBox_Clipboard_1.Text = Properties.Settings.Default.Clipboard_1.ToString();
             textBox_Clipboard_2.Text = Properties.Settings.Default.Clipboard_2.ToString();
@@ -48,6 +49,12 @@ namespace DesktopAssistant
         {
             if (checkBox_ShowDateTimeWindow.IsChecked == true)
             {
+                // Окно с показом погоды создается только 1 раз при первом нажатии чекбокса
+                if (dateTimeWindow == null)
+                {
+                    dateTimeWindow = new DateTimeWindow();
+                }
+
                 dateTimeWindow.Show();
             }
         }
@@ -96,8 +103,9 @@ namespace DesktopAssistant
             }
         }
 
+
         // Кнопка сохранения введеного текста в буфер обмена
-        void SaveTextToClipBoard(string text)
+        private void SaveTextToClipBoard(string text)
         {
             Clipboard.Clear();
             Clipboard.SetText(text);
@@ -151,7 +159,7 @@ namespace DesktopAssistant
                 passwordCheckWindow.Show();
 
                 // Когда в окне проверки пароля нажали кнопку "submit"
-                passwordCheckWindow.button_submitPassword_Clicked += (s, e) => 
+                passwordCheckWindow.button_submitPassword_Clicked += (s, e) =>
                 {
                     // Дешифруем строки только если правильно введен пароль в окне проверки пароля
                     if (passwordCheckWindow.textbox_Password.Text == "13")
@@ -192,6 +200,30 @@ namespace DesktopAssistant
 
 
             }
+        }
+
+
+        public event EventHandler tasklistTextChanged;
+
+        private void textBox_Tasklist_1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            tasklistTextChanged += (s, e) =>
+            {
+                File.WriteAllTextAsync("DesktopAssistant_TaskHistory.txt", $" {DateTime.Now.ToString()} {textBox_Tasklist_1.Text}\n");
+            };
+
+            if (checkBox_SaveInHistory.IsChecked == true)
+            {
+                tasklistTextChanged.Invoke(sender, e);
+            }
+
+        }
+
+        private void button_Tasklist_1_Done_Click(object sender, RoutedEventArgs e)
+        {
+            textBox_Tasklist_1.Foreground = Brushes.LightGreen;
+            textBox_Tasklist_1.IsEnabled = false;
+
         }
     }
 }
