@@ -24,7 +24,7 @@
         </Grid>
         <Grid x:Name="grid_taskList" Margin="278,44,21,261">
             <Label Content="Takslist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="18"/>
-            <TextBox x:Name="textBox_Tasklist_1" HorizontalAlignment="Left" Margin="10,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" FontWeight="Bold" TextChanged="textBox_Tasklist_TextChanged" Foreground="DarkRed" FontSize="17"/>
+            <TextBox x:Name="textBox_Tasklist_1" HorizontalAlignment="Left" Margin="10,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" FontWeight="Bold" TextChanged="textBox_Tasklist_TextChanged"  FontSize="17"/>
             <Button x:Name="button_Tasklist_1_Done" Content="" HorizontalAlignment="Left" Margin="212,69,0,0" VerticalAlignment="Top" Height="15" Width="31" Click="button_Tasklist_Done_Click"/>
             <TextBox x:Name="textBox_Tasklist_2" HorizontalAlignment="Left" Margin="10,120,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" FontWeight="Bold" TextChanged="textBox_Tasklist_TextChanged"/>
             <Button x:Name="button_Tasklist_2_Done" Content="" HorizontalAlignment="Left" Margin="212,120,0,0" VerticalAlignment="Top" Height="16" Width="31" Click="button_Tasklist_Done_Click"/>
@@ -42,5 +42,8 @@
         </Grid>
         <CheckBox x:Name="checkBox_SaveInHistory" Content="Save in history" HorizontalAlignment="Left" Margin="288,87,0,0" VerticalAlignment="Top"/>
         <DataGrid x:Name="dataGrid_TaskHistory" Margin="23,393,21,35"/>
+        <CheckBox x:Name="checkBox_DekstopElNumberTracking" Content="Мониторить раб. стол" HorizontalAlignment="Left" Margin="79,19,0,0" VerticalAlignment="Top" Checked="checkBox_DekstopElNumberTracking_Checked" Unchecked="checkBox_DekstopElNumberTracking_Unchecked"/>
+        <Label x:Name="label_Desktop_Number" Content="*...*" HorizontalAlignment="Left" Margin="226,13,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="combobox_DesktopNumber" HorizontalAlignment="Left" Margin="23,16,0,0" VerticalAlignment="Top" Width="42"/>
     </Grid>
 </Window>

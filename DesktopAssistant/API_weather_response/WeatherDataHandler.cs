@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DesktopAssistant.API_weather_response
 {
@@ -43,7 +44,7 @@ namespace DesktopAssistant.API_weather_response
         public static float temp_min;
 
 
-        public static void GetApiJsonData()
+        public static async Task GetApiJsonData()
         {
             // Срок прогноза в днях (limit) не работает
             var weatherApiUrl = String.Format(CultureInfo.InvariantCulture, "https://api.weather.yandex.ru/v2/informers?lat={0}&lon={1}", 51.46, 55.06);

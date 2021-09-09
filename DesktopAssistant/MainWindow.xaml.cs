@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace DesktopAssistant
 {
@@ -24,11 +25,19 @@ namespace DesktopAssistant
     public partial class MainWindow : Window
     {
         private DateTimeWindow dateTimeWindow;
+
         bool isTextEncrypted = false;
+
 
         public MainWindow()
         {
             InitializeComponent();
+
+            for (int i = 1; i <= 40; i++)
+            {
+                combobox_DesktopNumber.Items.Add(i);
+            }
+            combobox_DesktopNumber.SelectedItem = 20;
 
             textBox_Clipboard_1.Text = Properties.Settings.Default.Clipboard_1.ToString();
             textBox_Clipboard_2.Text = Properties.Settings.Default.Clipboard_2.ToString();
@@ -153,8 +162,17 @@ namespace DesktopAssistant
                 textBox_Clipboard_3.Text = encryptedStrings[2];
                 textBox_Clipboard_4.Text = encryptedStrings[3];
                 textBox_Clipboard_5.Text = encryptedStrings[4];
+
+                var textBoxes = new[] { textBox_Clipboard_1, textBox_Clipboard_2, textBox_Clipboard_3 ,
+                textBox_Clipboard_4,textBox_Clipboard_5};
+
+                foreach (var textBox in textBoxes)
+                {
+                    textBox.IsEnabled = false;
+                }
             }
         }
+
         private void checkBox_Encrypt_Unchecked(object sender, RoutedEventArgs e)
         {
             if (checkBox_Encrypt.IsChecked == false)
@@ -182,6 +200,15 @@ namespace DesktopAssistant
                         textBox_Clipboard_3.Text = decryptedStrings[2];
                         textBox_Clipboard_4.Text = decryptedStrings[3];
                         textBox_Clipboard_5.Text = decryptedStrings[4];
+
+
+                        var textBoxes = new[] { textBox_Clipboard_1, textBox_Clipboard_2, textBox_Clipboard_3 ,
+                textBox_Clipboard_4,textBox_Clipboard_5};
+
+                        foreach (var textBox in textBoxes)
+                        {
+                            textBox.IsEnabled = true;
+                        }
 
                         // Если текст висит незашифрованным дольше 10 секунд - он автоматически шифруется обратно
                         var twentySecondsTimer = new System.Windows.Threading.DispatcherTimer
@@ -225,61 +252,168 @@ namespace DesktopAssistant
 
         private void button_Tasklist_Done_Click(object sender, RoutedEventArgs e)
         {
-            textBox_Tasklist_1.Foreground = Brushes.LightGreen;
-            textBox_Tasklist_1.IsEnabled = false;
+            Control control = (Control)sender;
 
-            //Control control = (Control)sender;
+            switch (control.Name)
+            {
+                case "button_Tasklist_1_Done":
+                    if (textBox_Tasklist_1.IsEnabled)
+                    {
+                        textBox_Tasklist_1.IsEnabled = false;
+                        textBox_Tasklist_1.Foreground = Brushes.LightPink;
+                        break;
+                    }
+                    else
+                    {
+                        textBox_Tasklist_1.IsEnabled = true;
+                        textBox_Tasklist_1.Foreground = Brushes.Black;
+                        break;
+                    }
+                    break;
+                case "button_Tasklist_2_Done":
+                    if (textBox_Tasklist_2.IsEnabled)
+                    {
+                        textBox_Tasklist_2.IsEnabled = false;
+                        textBox_Tasklist_2.Foreground = Brushes.LightPink;
+                        break;
+                    }
+                    else
+                    {
+                        textBox_Tasklist_2.IsEnabled = true;
+                        textBox_Tasklist_2.Foreground = Brushes.Black;
+                        break;
+                    }
+                    break;
+                case "button_Tasklist_3_Done":
+                    if (textBox_Tasklist_3.IsEnabled)
+                    {
+                        textBox_Tasklist_3.IsEnabled = false;
+                        textBox_Tasklist_3.Foreground = Brushes.LightPink;
+                        break;
+                    }
+                    else
+                    {
+                        textBox_Tasklist_3.IsEnabled = true;
+                        textBox_Tasklist_3.Foreground = Brushes.Black;
+                        break;
+                    }
+                    break;
+                case "button_Tasklist_4_Done":
+                    if (textBox_Tasklist_4.IsEnabled)
+                    {
+                        textBox_Tasklist_4.IsEnabled = false;
+                        textBox_Tasklist_4.Foreground = Brushes.LightPink;
+                        break;
+                    }
+                    else
+                    {
+                        textBox_Tasklist_4.IsEnabled = true;
+                        textBox_Tasklist_4.Foreground = Brushes.Black;
+                        break;
+                    }
+                    break;
+                case "button_Tasklist_5_Done":
+                    if (textBox_Tasklist_5.IsEnabled)
+                    {
+                        textBox_Tasklist_5.IsEnabled = false;
+                        textBox_Tasklist_5.Foreground = Brushes.LightPink;
+                        break;
+                    }
+                    else
+                    {
+                        textBox_Tasklist_5.IsEnabled = true;
+                        textBox_Tasklist_5.Foreground = Brushes.Black;
+                        break;
+                    }
+                    break;
 
-            //switch (control.Name)
-            //{
-            //    case "button_Clipboard_1":
-            //        SaveTextToClipBoard(textBox_Clipboard_1.Text);
-            //        break;
-            //    case "button_Clipboard_2":
-            //        SaveTextToClipBoard(textBox_Clipboard_2.Text);
-            //        break;
-            //    case "button_Clipboard_3":
-            //        SaveTextToClipBoard(textBox_Clipboard_3.Text);
-            //        break;
-            //    case "button_Clipboard_4":
-            //        SaveTextToClipBoard(textBox_Clipboard_4.Text);
-            //        break;
-            //    case "button_Clipboard_5":
-            //        SaveTextToClipBoard(textBox_Clipboard_5.Text);
-            //        break;
-
-            //    default:
-            //        break;
-            //}
+                default:
+                    break;
+            }
 
         }
 
         private void button_Tasklist_Clear_Click(object sender, RoutedEventArgs e)
         {
-            //Control control = (Control)sender;
+            Control control = (Control)sender;
 
-            //switch (control.Name)
-            //{
-            //    case "button_Clipboard_1":
-            //        SaveTextToClipBoard(textBox_Clipboard_1.Text);
-            //        break;
-            //    case "button_Clipboard_2":
-            //        SaveTextToClipBoard(textBox_Clipboard_2.Text);
-            //        break;
-            //    case "button_Clipboard_3":
-            //        SaveTextToClipBoard(textBox_Clipboard_3.Text);
-            //        break;
-            //    case "button_Clipboard_4":
-            //        SaveTextToClipBoard(textBox_Clipboard_4.Text);
-            //        break;
-            //    case "button_Clipboard_5":
-            //        SaveTextToClipBoard(textBox_Clipboard_5.Text);
-            //        break;
+            switch (control.Name)
+            {
+                case "button_Tasklist_1_Clear":
+                    textBox_Tasklist_1.Clear();
+                    if (!textBox_Tasklist_1.IsEnabled)
+                    {
+                        textBox_Tasklist_1.IsEnabled = true;
+                        textBox_Tasklist_1.Foreground = Brushes.Black;
+                    }
+                    break;
+                case "button_Tasklist_2_Clear":
+                    textBox_Tasklist_2.Clear();
+                    if (!textBox_Tasklist_2.IsEnabled)
+                    {
+                        textBox_Tasklist_2.IsEnabled = true;
+                        textBox_Tasklist_2.Foreground = Brushes.Black;
+                    }
+                    break;
+                case "button_Tasklist_3_Clear":
+                    textBox_Tasklist_3.Clear();
+                    if (!textBox_Tasklist_3.IsEnabled)
+                    {
+                        textBox_Tasklist_3.IsEnabled = true;
+                        textBox_Tasklist_3.Foreground = Brushes.Black;
+                    }
+                    break;
+                case "button_Tasklist_4_Clear":
+                    textBox_Tasklist_4.Clear();
+                    if (!textBox_Tasklist_4.IsEnabled)
+                    {
+                        textBox_Tasklist_4.IsEnabled = true;
+                        textBox_Tasklist_4.Foreground = Brushes.Black;
+                    }
+                    break;
+                case "button_Tasklist_5_Clear":
+                    textBox_Tasklist_5.Clear();
+                    if (!textBox_Tasklist_5.IsEnabled)
+                    {
+                        textBox_Tasklist_5.IsEnabled = true;
+                        textBox_Tasklist_5.Foreground = Brushes.Black;
+                    }
+                    break;
 
-            //    default:
-            //        break;
-            //}
+                default:
+                    break;
+            }
 
+        }
+
+        DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
+        {
+            Interval = new TimeSpan(0, 0, 5)
+        };
+
+        private void checkBox_DekstopElNumberTracking_Checked(object sender, RoutedEventArgs e)
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            int fileCountOnDesktop = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly).Length;
+
+            if (checkBox_DekstopElNumberTracking.IsChecked == true)
+            {
+                checkDesktopNumberTimer.Start();
+                checkDesktopNumberTimer.Tick += (o, t) =>
+                {
+                    if (fileCountOnDesktop >= (int)combobox_DesktopNumber.SelectedItem)
+                    {
+                        MessageBox.Show($"На рабочем столе слишком много объектов",
+                        "Рабочий стол забит", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                };
+            }
+            label_Desktop_Number.Content = fileCountOnDesktop;
+        }
+
+        private void checkBox_DekstopElNumberTracking_Unchecked(object sender, RoutedEventArgs e)
+        {
+            checkDesktopNumberTimer.Stop();
         }
     }
 }

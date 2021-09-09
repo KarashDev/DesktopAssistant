@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,6 +24,10 @@ namespace DesktopAssistant
     public partial class DateTimeWindow : Window
     {
         public DateTimeWindow()
+        {
+            CreateDateTimeWindow();
+        }
+        public async Task CreateDateTimeWindow()
         {
             InitializeComponent();
 
@@ -50,7 +55,7 @@ namespace DesktopAssistant
 
             try
             {
-                WeatherDataHandler.GetApiJsonData();
+                await WeatherDataHandler.GetApiJsonData();
 
                 var oneHourTimer = new System.Windows.Threading.DispatcherTimer
                 {
