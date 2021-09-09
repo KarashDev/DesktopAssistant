@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopAssistant"
         mc:Ignorable="d"
-        Title="MainWindow" Height="655" Width="552">
-    <Grid>
+        Title="MainWindow" Height="454" Width="573">
+    <Grid Margin="0,0,0,12">
         <CheckBox x:Name="checkBox_ShowDateTimeWindow" Content="Окно даты/времени" HorizontalAlignment="Left" Margin="400,18,0,0" VerticalAlignment="Top" Checked="checkBox_ShowDateTimeWindow_Checked" Unchecked="checkBox_ShowDateTimeWindow_UnChecked"/>
-        <Grid x:Name="grid_Clipboard" Margin="23,44,276,261">
+        <Grid x:Name="grid_Clipboard" Margin="10,44,276,10">
             <TextBox x:Name="textBox_Clipboard_1" HorizontalAlignment="Left" Margin="10,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" TextChanged="textBox_Clipboard_TextChanged"/>
             <Button x:Name="button_Clipboard_1" Content="" HorizontalAlignment="Left" Margin="212,71,0,0" VerticalAlignment="Top" Height="31" Width="31" Click="button_Clipboard_Click"/>
             <TextBox x:Name="textBox_Clipboard_2" HorizontalAlignment="Left" Margin="10,120,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" TextChanged="textBox_Clipboard_TextChanged"/>
@@ -22,9 +22,9 @@
             <CheckBox x:Name="checkBox_Encrypt" Content="Encrypt " HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Checked="checkBox_Encrypt_Checked" Unchecked="checkBox_Encrypt_Unchecked"/>
             <Label Content="Buffer" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="18"/>
         </Grid>
-        <Grid x:Name="grid_taskList" Margin="278,44,21,261">
+        <Grid x:Name="grid_taskList" Margin="278,44,10,10">
             <Label Content="Takslist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="18"/>
-            <TextBox x:Name="textBox_Tasklist_1" HorizontalAlignment="Left" Margin="10,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" FontWeight="Bold" TextChanged="textBox_Tasklist_TextChanged"  FontSize="17"/>
+            <TextBox x:Name="textBox_Tasklist_1" HorizontalAlignment="Left" Margin="10,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" FontWeight="Bold" TextChanged="textBox_Tasklist_TextChanged"/>
             <Button x:Name="button_Tasklist_1_Done" Content="" HorizontalAlignment="Left" Margin="212,69,0,0" VerticalAlignment="Top" Height="15" Width="31" Click="button_Tasklist_Done_Click"/>
             <TextBox x:Name="textBox_Tasklist_2" HorizontalAlignment="Left" Margin="10,120,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="191" Height="35" FontWeight="Bold" TextChanged="textBox_Tasklist_TextChanged"/>
             <Button x:Name="button_Tasklist_2_Done" Content="" HorizontalAlignment="Left" Margin="212,120,0,0" VerticalAlignment="Top" Height="16" Width="31" Click="button_Tasklist_Done_Click"/>
@@ -39,11 +39,10 @@
             <Button x:Name="button_Tasklist_3_Clear" Content="" HorizontalAlignment="Left" Margin="212,192,0,0" VerticalAlignment="Top" Height="15" Width="31" Click="button_Tasklist_Clear_Click" />
             <Button x:Name="button_Tasklist_4_Clear" Content="" HorizontalAlignment="Left" Margin="212,244,0,0" VerticalAlignment="Top" Height="15" Width="31" Click="button_Tasklist_Clear_Click" />
             <Button x:Name="button_Tasklist_5_Clear" Content="" HorizontalAlignment="Left" Margin="212,298,0,0" VerticalAlignment="Top" Height="15" Width="31" Click="button_Tasklist_Clear_Click" />
+            <Button x:Name="button_SaveTasksInHistory" Content="In history" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="90" Click="button_SaveTasksInHistory_Click" Height="20"/>
         </Grid>
-        <CheckBox x:Name="checkBox_SaveInHistory" Content="Save in history" HorizontalAlignment="Left" Margin="288,87,0,0" VerticalAlignment="Top"/>
-        <DataGrid x:Name="dataGrid_TaskHistory" Margin="23,393,21,35"/>
         <CheckBox x:Name="checkBox_DekstopElNumberTracking" Content="Мониторить раб. стол" HorizontalAlignment="Left" Margin="79,19,0,0" VerticalAlignment="Top" Checked="checkBox_DekstopElNumberTracking_Checked" Unchecked="checkBox_DekstopElNumberTracking_Unchecked"/>
-        <Label x:Name="label_Desktop_Number" Content="*...*" HorizontalAlignment="Left" Margin="226,13,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Desktop_NumberOfFiles" Content="*...*" HorizontalAlignment="Left" Margin="226,14,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="combobox_DesktopNumber" HorizontalAlignment="Left" Margin="23,16,0,0" VerticalAlignment="Top" Width="42"/>
     </Grid>
 </Window>

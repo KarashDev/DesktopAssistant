@@ -28,6 +28,11 @@ namespace DesktopAssistant
 
         bool isTextEncrypted = false;
 
+        DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
+        {
+            Interval = new TimeSpan(1, 0, 0)
+        };
+
 
         public MainWindow()
         {
@@ -44,6 +49,55 @@ namespace DesktopAssistant
             textBox_Clipboard_3.Text = Properties.Settings.Default.Clipboard_3.ToString();
             textBox_Clipboard_4.Text = Properties.Settings.Default.Clipboard_4.ToString();
             textBox_Clipboard_5.Text = Properties.Settings.Default.Clipboard_5.ToString();
+
+            textBox_Tasklist_1.Text = Properties.Settings.Default.Tasklist_1.ToString();
+            textBox_Tasklist_2.Text = Properties.Settings.Default.Tasklist_2.ToString();
+            textBox_Tasklist_3.Text = Properties.Settings.Default.Tasklist_3.ToString();
+            textBox_Tasklist_4.Text = Properties.Settings.Default.Tasklist_4.ToString();
+            textBox_Tasklist_5.Text = Properties.Settings.Default.Tasklist_5.ToString();
+
+
+            // Проверка, включен или выключен текстбокс (выполнена/не выполнена задача) с файла настроек,
+            // чтобы восстановить окно в том же виде, в каком оно было до перезапуска программы
+            if (Properties.Settings.Default.Tasklist_1_isEnabled)
+                textBox_Tasklist_1.IsEnabled = true;
+            else
+            {
+                textBox_Tasklist_1.IsEnabled = false;
+                textBox_Tasklist_1.Foreground = Brushes.LightPink;
+            }
+
+            if (Properties.Settings.Default.Tasklist_2_isEnabled)
+                textBox_Tasklist_2.IsEnabled = true;
+            else
+            {
+                textBox_Tasklist_2.IsEnabled = false;
+                textBox_Tasklist_2.Foreground = Brushes.LightPink;
+            }
+
+            if (Properties.Settings.Default.Tasklist_3_isEnabled)
+                textBox_Tasklist_3.IsEnabled = true;
+            else
+            {
+                textBox_Tasklist_3.IsEnabled = false;
+                textBox_Tasklist_3.Foreground = Brushes.LightPink;
+            }
+
+            if (Properties.Settings.Default.Tasklist_4_isEnabled)
+                textBox_Tasklist_4.IsEnabled = true;
+            else
+            {
+                textBox_Tasklist_4.IsEnabled = false;
+                textBox_Tasklist_4.Foreground = Brushes.LightPink;
+            }
+
+            if (Properties.Settings.Default.Tasklist_5_isEnabled)
+                textBox_Tasklist_5.IsEnabled = true;
+            else
+            {
+                textBox_Tasklist_5.IsEnabled = false;
+                textBox_Tasklist_5.Foreground = Brushes.LightPink;
+            }
 
             this.Closed += (s, e) => Application.Current.Shutdown();
 
@@ -74,8 +128,6 @@ namespace DesktopAssistant
                 dateTimeWindow.Hide();
             }
         }
-
-
 
         // Сохранение введенного текста в файл настроек, чтобы он сохранился даже при перезапуске программы
         private void textBox_Clipboard_TextChanged(object sender, TextChangedEventArgs e)
@@ -109,7 +161,6 @@ namespace DesktopAssistant
                     break;
             }
         }
-
 
         // Кнопка сохранения введеного текста в буфер обмена
         private void SaveTextToClipBoard(string text)
@@ -234,95 +285,149 @@ namespace DesktopAssistant
         }
 
 
-        public event EventHandler tasklistTextChanged;
-
         private void textBox_Tasklist_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            tasklistTextChanged += (s, e) =>
-            {
-                File.WriteAllTextAsync("DesktopAssistant_TaskHistory.txt", $" {DateTime.Now.ToString()} {textBox_Tasklist_1.Text}\n");
-            };
-
-            if (checkBox_SaveInHistory.IsChecked == true)
-            {
-                tasklistTextChanged.Invoke(sender, e);
-            }
-
-        }
-
-        private void button_Tasklist_Done_Click(object sender, RoutedEventArgs e)
         {
             Control control = (Control)sender;
 
             switch (control.Name)
             {
+                case "textBox_Tasklist_1":
+                    Properties.Settings.Default.Tasklist_1 = textBox_Tasklist_1.Text;
+                    break;
+                case "textBox_Tasklist_2":
+                    Properties.Settings.Default.Tasklist_2 = textBox_Tasklist_2.Text;
+                    break;
+                case "textBox_Tasklist_3":
+                    Properties.Settings.Default.Tasklist_3 = textBox_Tasklist_3.Text;
+                    break;
+                case "textBox_Tasklist_4":
+                    Properties.Settings.Default.Tasklist_4 = textBox_Tasklist_4.Text;
+                    break;
+                case "textBox_Tasklist_5":
+                    Properties.Settings.Default.Tasklist_5 = textBox_Tasklist_5.Text;
+                    break;
+
+                default:
+                    break;
+            };
+        }
+
+        private void button_SaveTasksInHistory_Click(object sender, RoutedEventArgs e)
+        {
+            void LogTextToFile(TextBox textBox)
+            {
+                string fileName = "DesktopAssistant_TaskHistory.txt";
+
+                string textFromTextbox = String.IsNullOrEmpty(textBox.Text) ? "*пусто*" : textBox.Text;
+
+                string textToWrite = $"\n\" {DateTime.Now.ToString()} - ПОЛЕ {textBox.Name} - {textFromTextbox}\n\"";
+                using (StreamWriter writer = new StreamWriter(fileName, true))
+                {
+                    writer.Write(textToWrite);
+                }
+            }
+
+            if (String.IsNullOrEmpty(textBox_Tasklist_1.Text) && String.IsNullOrEmpty(textBox_Tasklist_2.Text) &&
+                String.IsNullOrEmpty(textBox_Tasklist_3.Text) && String.IsNullOrEmpty(textBox_Tasklist_4.Text) &&
+                String.IsNullOrEmpty(textBox_Tasklist_5.Text))
+            {
+                MessageBox.Show("Поля пусты, нечего сохранять");
+            }
+            else
+            {
+                LogTextToFile(textBox_Tasklist_1);
+                LogTextToFile(textBox_Tasklist_2);
+                LogTextToFile(textBox_Tasklist_3);
+                LogTextToFile(textBox_Tasklist_4);
+                LogTextToFile(textBox_Tasklist_5);
+            }
+
+        }
+
+        void EnableTextbox(TextBox textBox)
+        {
+            textBox.IsEnabled = true;
+            textBox.Foreground = Brushes.Black;
+        }
+
+        void DisableTextbox(TextBox textBox)
+        {
+            textBox.IsEnabled = false;
+            textBox.Foreground = Brushes.LightPink;
+        }
+
+        private void button_Tasklist_Done_Click(object sender, RoutedEventArgs e)
+        {
+            Control control = (Control)sender;
+            switch (control.Name)
+            {
                 case "button_Tasklist_1_Done":
                     if (textBox_Tasklist_1.IsEnabled)
                     {
-                        textBox_Tasklist_1.IsEnabled = false;
-                        textBox_Tasklist_1.Foreground = Brushes.LightPink;
+                        DisableTextbox(textBox_Tasklist_1);
+                        Properties.Settings.Default.Tasklist_1_isEnabled = false;
                         break;
                     }
                     else
                     {
-                        textBox_Tasklist_1.IsEnabled = true;
-                        textBox_Tasklist_1.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_1);
+                        Properties.Settings.Default.Tasklist_1_isEnabled = true;
                         break;
                     }
                     break;
                 case "button_Tasklist_2_Done":
                     if (textBox_Tasklist_2.IsEnabled)
                     {
-                        textBox_Tasklist_2.IsEnabled = false;
-                        textBox_Tasklist_2.Foreground = Brushes.LightPink;
+                        DisableTextbox(textBox_Tasklist_2);
+                        Properties.Settings.Default.Tasklist_2_isEnabled = false;
                         break;
                     }
                     else
                     {
-                        textBox_Tasklist_2.IsEnabled = true;
-                        textBox_Tasklist_2.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_2);
+                        Properties.Settings.Default.Tasklist_2_isEnabled = true;
                         break;
                     }
                     break;
                 case "button_Tasklist_3_Done":
                     if (textBox_Tasklist_3.IsEnabled)
                     {
-                        textBox_Tasklist_3.IsEnabled = false;
-                        textBox_Tasklist_3.Foreground = Brushes.LightPink;
+                        DisableTextbox(textBox_Tasklist_3);
+                        Properties.Settings.Default.Tasklist_3_isEnabled = false;
                         break;
                     }
                     else
                     {
-                        textBox_Tasklist_3.IsEnabled = true;
-                        textBox_Tasklist_3.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_3);
+                        Properties.Settings.Default.Tasklist_3_isEnabled = true;
                         break;
                     }
                     break;
                 case "button_Tasklist_4_Done":
                     if (textBox_Tasklist_4.IsEnabled)
                     {
-                        textBox_Tasklist_4.IsEnabled = false;
-                        textBox_Tasklist_4.Foreground = Brushes.LightPink;
+                        DisableTextbox(textBox_Tasklist_4);
+                        Properties.Settings.Default.Tasklist_4_isEnabled = false;
                         break;
                     }
                     else
                     {
-                        textBox_Tasklist_4.IsEnabled = true;
-                        textBox_Tasklist_4.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_4);
+                        Properties.Settings.Default.Tasklist_4_isEnabled = true;
                         break;
                     }
                     break;
                 case "button_Tasklist_5_Done":
                     if (textBox_Tasklist_5.IsEnabled)
                     {
-                        textBox_Tasklist_5.IsEnabled = false;
-                        textBox_Tasklist_5.Foreground = Brushes.LightPink;
+                        DisableTextbox(textBox_Tasklist_5);
+                        Properties.Settings.Default.Tasklist_5_isEnabled = false;
                         break;
                     }
                     else
                     {
-                        textBox_Tasklist_5.IsEnabled = true;
-                        textBox_Tasklist_5.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_5);
+                        Properties.Settings.Default.Tasklist_5_isEnabled = true;
                         break;
                     }
                     break;
@@ -343,40 +448,40 @@ namespace DesktopAssistant
                     textBox_Tasklist_1.Clear();
                     if (!textBox_Tasklist_1.IsEnabled)
                     {
-                        textBox_Tasklist_1.IsEnabled = true;
-                        textBox_Tasklist_1.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_1);
+                        Properties.Settings.Default.Tasklist_1_isEnabled = true;
                     }
                     break;
                 case "button_Tasklist_2_Clear":
                     textBox_Tasklist_2.Clear();
                     if (!textBox_Tasklist_2.IsEnabled)
                     {
-                        textBox_Tasklist_2.IsEnabled = true;
-                        textBox_Tasklist_2.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_2);
+                        Properties.Settings.Default.Tasklist_2_isEnabled = true;
                     }
                     break;
                 case "button_Tasklist_3_Clear":
                     textBox_Tasklist_3.Clear();
                     if (!textBox_Tasklist_3.IsEnabled)
                     {
-                        textBox_Tasklist_3.IsEnabled = true;
-                        textBox_Tasklist_3.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_3);
+                        Properties.Settings.Default.Tasklist_3_isEnabled = true;
                     }
                     break;
                 case "button_Tasklist_4_Clear":
                     textBox_Tasklist_4.Clear();
                     if (!textBox_Tasklist_4.IsEnabled)
                     {
-                        textBox_Tasklist_4.IsEnabled = true;
-                        textBox_Tasklist_4.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_4);
+                        Properties.Settings.Default.Tasklist_4_isEnabled = true;
                     }
                     break;
                 case "button_Tasklist_5_Clear":
                     textBox_Tasklist_5.Clear();
                     if (!textBox_Tasklist_5.IsEnabled)
                     {
-                        textBox_Tasklist_5.IsEnabled = true;
-                        textBox_Tasklist_5.Foreground = Brushes.Black;
+                        EnableTextbox(textBox_Tasklist_5);
+                        Properties.Settings.Default.Tasklist_5_isEnabled = true;
                     }
                     break;
 
@@ -386,21 +491,20 @@ namespace DesktopAssistant
 
         }
 
-        DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
-        {
-            Interval = new TimeSpan(0, 0, 5)
-        };
 
         private void checkBox_DekstopElNumberTracking_Checked(object sender, RoutedEventArgs e)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            int fileCountOnDesktop = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly).Length;
 
             if (checkBox_DekstopElNumberTracking.IsChecked == true)
             {
                 checkDesktopNumberTimer.Start();
                 checkDesktopNumberTimer.Tick += (o, t) =>
                 {
+                    int fileCountOnDesktop = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly).Length;
+                    label_Desktop_NumberOfFiles.Content = fileCountOnDesktop;
+
+
                     if (fileCountOnDesktop >= (int)combobox_DesktopNumber.SelectedItem)
                     {
                         MessageBox.Show($"На рабочем столе слишком много объектов",
@@ -408,12 +512,14 @@ namespace DesktopAssistant
                     }
                 };
             }
-            label_Desktop_Number.Content = fileCountOnDesktop;
         }
 
         private void checkBox_DekstopElNumberTracking_Unchecked(object sender, RoutedEventArgs e)
         {
             checkDesktopNumberTimer.Stop();
         }
+
+
+
     }
 }

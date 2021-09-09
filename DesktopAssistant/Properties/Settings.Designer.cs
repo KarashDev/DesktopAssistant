@@ -82,5 +82,125 @@ namespace DesktopAssistant.Properties {
                 this["Clipboard_5"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Tasklist_1 {
+            get {
+                return ((string)(this["Tasklist_1"]));
+            }
+            set {
+                this["Tasklist_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Tasklist_2 {
+            get {
+                return ((string)(this["Tasklist_2"]));
+            }
+            set {
+                this["Tasklist_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Tasklist_3 {
+            get {
+                return ((string)(this["Tasklist_3"]));
+            }
+            set {
+                this["Tasklist_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Tasklist_4 {
+            get {
+                return ((string)(this["Tasklist_4"]));
+            }
+            set {
+                this["Tasklist_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Tasklist_5 {
+            get {
+                return ((string)(this["Tasklist_5"]));
+            }
+            set {
+                this["Tasklist_5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Tasklist_1_isEnabled {
+            get {
+                return ((bool)(this["Tasklist_1_isEnabled"]));
+            }
+            set {
+                this["Tasklist_1_isEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Tasklist_2_isEnabled {
+            get {
+                return ((bool)(this["Tasklist_2_isEnabled"]));
+            }
+            set {
+                this["Tasklist_2_isEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Tasklist_3_isEnabled {
+            get {
+                return ((bool)(this["Tasklist_3_isEnabled"]));
+            }
+            set {
+                this["Tasklist_3_isEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Tasklist_4_isEnabled {
+            get {
+                return ((bool)(this["Tasklist_4_isEnabled"]));
+            }
+            set {
+                this["Tasklist_4_isEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Tasklist_5_isEnabled {
+            get {
+                return ((bool)(this["Tasklist_5_isEnabled"]));
+            }
+            set {
+                this["Tasklist_5_isEnabled"] = value;
+            }
+        }
     }
 }
