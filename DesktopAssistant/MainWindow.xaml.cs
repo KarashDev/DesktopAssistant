@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Drawing;
+
 
 namespace DesktopAssistant
 {
@@ -28,22 +30,27 @@ namespace DesktopAssistant
 
         bool isTextEncrypted = false;
 
+        // Таймер для срабатывания отслеживания количества элементов на рабочем столе
         DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
         {
-            Interval = new TimeSpan(1, 0, 0)
+            Interval = new TimeSpan(0, 30, 0)
         };
-
 
         public MainWindow()
         {
             InitializeComponent();
 
+            // Скрываем блок с настройками уведомления для списка задач
+            HideNotificationSettings();
+            
+            // Заполнение combobox
             for (int i = 1; i <= 40; i++)
             {
                 combobox_DesktopNumber.Items.Add(i);
             }
             combobox_DesktopNumber.SelectedItem = 20;
 
+            // Заполнение полей значениями, ранее сохраненными в файл настроек
             textBox_Clipboard_1.Text = Properties.Settings.Default.Clipboard_1.ToString();
             textBox_Clipboard_2.Text = Properties.Settings.Default.Clipboard_2.ToString();
             textBox_Clipboard_3.Text = Properties.Settings.Default.Clipboard_3.ToString();
@@ -55,7 +62,6 @@ namespace DesktopAssistant
             textBox_Tasklist_3.Text = Properties.Settings.Default.Tasklist_3.ToString();
             textBox_Tasklist_4.Text = Properties.Settings.Default.Tasklist_4.ToString();
             textBox_Tasklist_5.Text = Properties.Settings.Default.Tasklist_5.ToString();
-
 
             // Проверка, включен или выключен текстбокс (выполнена/не выполнена задача) с файла настроек,
             // чтобы восстановить окно в том же виде, в каком оно было до перезапуска программы
@@ -107,6 +113,20 @@ namespace DesktopAssistant
             }
         }
 
+
+        // Методы скрытия/показа блока с настройками уведомления для списка задач
+        public void ShowNotificationSettings()
+        {
+            this.Width = 800;
+            grid_taksList_NotifyElements.Visibility = Visibility.Visible;
+        }
+        
+        public void HideNotificationSettings()
+		{
+            this.Width = 600;
+            grid_taksList_NotifyElements.Visibility = Visibility.Hidden;
+        }
+
         // Если чекбокс активирован - показывается окно с временем и датой
         private void checkBox_ShowDateTimeWindow_Checked(object sender, RoutedEventArgs e)
         {
@@ -121,6 +141,7 @@ namespace DesktopAssistant
                 dateTimeWindow.Show();
             }
         }
+      
         private void checkBox_ShowDateTimeWindow_UnChecked(object sender, RoutedEventArgs e)
         {
             if (checkBox_ShowDateTimeWindow.IsChecked == false)
@@ -491,7 +512,7 @@ namespace DesktopAssistant
 
         }
 
-
+        // Чекбокс мониторинга количества элементов на рабочем столе
         private void checkBox_DekstopElNumberTracking_Checked(object sender, RoutedEventArgs e)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -519,7 +540,58 @@ namespace DesktopAssistant
             checkDesktopNumberTimer.Stop();
         }
 
+		private void button_Tasklist_Notify_Click(object sender, RoutedEventArgs e)
+		{
+            Control control = (Control)sender;
+
+			this.Width = 1000;
+
+            switch (control.Name)
+            {
+                case "button_Tasklist_1_Notify":
+                    ShowNotificationSettings();
+                    break;
+                case "button_Tasklist_2_Notify":
+                    ShowNotificationSettings();
+                    break;
+                case "button_Tasklist_3_Notify":
+                    ShowNotificationSettings();
+                    break;
+                case "button_Tasklist_4_Notify":
+                    ShowNotificationSettings();
+                    break;
+                case "button_Tasklist_5_Notify":
+                    ShowNotificationSettings();
+                    break;
+                default:
+                    break;
+            };
+        }
+
+        // Активации уведомления связанного с задачей
+		private void button_Tasklist_Notif_Act_Click(object sender, RoutedEventArgs e)
+		{
+           // Должен сохраняться в Properties
+            List<TaskListNotification> notificationsList = new List<TaskListNotification>();
+
+            var enteredHours = textBox_Notify_Hrs.Text;
+            var enteredMinutes = textBox_Notify_Mins.Text;
+
+            TaskListNotification queryMatch = notificationsList.FirstOrDefault(n => n.dateTime.ToString("HH") == enteredHours
+            && n.dateTime.ToString("mm") == enteredMinutes);
+
+            if (//если найдена сущность)
+			{
+                //Вызываем окно с уведомлением, переносим на него текст (если нужно)
+			}
+            else
+			{
+                //Ошибка
+			}
+            
+            HideNotificationSettings();
+		}
 
 
-    }
+	}
 }

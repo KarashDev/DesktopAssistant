@@ -27,6 +27,7 @@ namespace DesktopAssistant
         {
             CreateDateTimeWindow();
         }
+
         public async Task CreateDateTimeWindow()
         {
             InitializeComponent();
@@ -40,13 +41,13 @@ namespace DesktopAssistant
                 Interval = new TimeSpan(0, 0, 1)
             };
             secondsTimer.Start();
-            //secondsTimer.Tick += (o, t) =>
-            //{
-            //    label_Time.Content = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
-            //};
+			secondsTimer.Tick += (o, t) =>
+			{
+				label_Time.Content = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+			};
 
 
-            label_Date.Content = DateTime.Now.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
+			label_Date.Content = DateTime.Now.ToString("dd.MM.yy", CultureInfo.InvariantCulture);
             label_DayOfWeek.Content = DateTime.Now.DayOfWeek.ToString();
 
             // === День недели на РУССКОМ ===
@@ -70,8 +71,8 @@ namespace DesktopAssistant
                 // Если запрос API сработал без exeption, однако не вернул данные - отдельная проверка
                 if (WeatherDataHandler.temp_max != 0 && WeatherDataHandler.temp_min != 0)
                 {
-                    label_maxTempToday.Content = $"Max temp - {WeatherDataHandler.temp_max} °C";
-                    label_minTempToday.Content = $"Min temp - {WeatherDataHandler.temp_min} °C";
+                    label_maxTempToday.Content = $"Max temp : {WeatherDataHandler.temp_max} °C";
+                    label_minTempToday.Content = $"Min temp : {WeatherDataHandler.temp_min} °C";
                 }
                 else
                 {
