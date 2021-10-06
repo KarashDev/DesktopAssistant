@@ -21,575 +21,593 @@ using System.Drawing;
 
 namespace DesktopAssistant
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        private DateTimeWindow dateTimeWindow;
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
+	{
+		private DateTimeWindow dateTimeWindow;
 
-        bool isTextEncrypted = false;
+		bool isTextEncrypted = false;
 
-        // Таймер для срабатывания отслеживания количества элементов на рабочем столе
-        DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
-        {
-            Interval = new TimeSpan(0, 30, 0)
-        };
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            // Скрываем блок с настройками уведомления для списка задач
-            HideNotificationSettings();
-            
-            // Заполнение combobox
-            for (int i = 1; i <= 40; i++)
-            {
-                combobox_DesktopNumber.Items.Add(i);
-            }
-            combobox_DesktopNumber.SelectedItem = 20;
-
-            // Заполнение полей значениями, ранее сохраненными в файл настроек
-            textBox_Clipboard_1.Text = Properties.Settings.Default.Clipboard_1.ToString();
-            textBox_Clipboard_2.Text = Properties.Settings.Default.Clipboard_2.ToString();
-            textBox_Clipboard_3.Text = Properties.Settings.Default.Clipboard_3.ToString();
-            textBox_Clipboard_4.Text = Properties.Settings.Default.Clipboard_4.ToString();
-            textBox_Clipboard_5.Text = Properties.Settings.Default.Clipboard_5.ToString();
-
-            textBox_Tasklist_1.Text = Properties.Settings.Default.Tasklist_1.ToString();
-            textBox_Tasklist_2.Text = Properties.Settings.Default.Tasklist_2.ToString();
-            textBox_Tasklist_3.Text = Properties.Settings.Default.Tasklist_3.ToString();
-            textBox_Tasklist_4.Text = Properties.Settings.Default.Tasklist_4.ToString();
-            textBox_Tasklist_5.Text = Properties.Settings.Default.Tasklist_5.ToString();
-
-            // Проверка, включен или выключен текстбокс (выполнена/не выполнена задача) с файла настроек,
-            // чтобы восстановить окно в том же виде, в каком оно было до перезапуска программы
-            if (Properties.Settings.Default.Tasklist_1_isEnabled)
-                textBox_Tasklist_1.IsEnabled = true;
-            else
-            {
-                textBox_Tasklist_1.IsEnabled = false;
-                textBox_Tasklist_1.Foreground = Brushes.LightPink;
-            }
-
-            if (Properties.Settings.Default.Tasklist_2_isEnabled)
-                textBox_Tasklist_2.IsEnabled = true;
-            else
-            {
-                textBox_Tasklist_2.IsEnabled = false;
-                textBox_Tasklist_2.Foreground = Brushes.LightPink;
-            }
-
-            if (Properties.Settings.Default.Tasklist_3_isEnabled)
-                textBox_Tasklist_3.IsEnabled = true;
-            else
-            {
-                textBox_Tasklist_3.IsEnabled = false;
-                textBox_Tasklist_3.Foreground = Brushes.LightPink;
-            }
-
-            if (Properties.Settings.Default.Tasklist_4_isEnabled)
-                textBox_Tasklist_4.IsEnabled = true;
-            else
-            {
-                textBox_Tasklist_4.IsEnabled = false;
-                textBox_Tasklist_4.Foreground = Brushes.LightPink;
-            }
-
-            if (Properties.Settings.Default.Tasklist_5_isEnabled)
-                textBox_Tasklist_5.IsEnabled = true;
-            else
-            {
-                textBox_Tasklist_5.IsEnabled = false;
-                textBox_Tasklist_5.Foreground = Brushes.LightPink;
-            }
-
-            this.Closed += (s, e) => Application.Current.Shutdown();
-
-            if (!isTextEncrypted)
-            {
-                this.Closed += (s, e) => Properties.Settings.Default.Save();
-            }
-        }
-
-
-        // Методы скрытия/показа блока с настройками уведомления для списка задач
-        public void ShowNotificationSettings()
-        {
-            this.Width = 800;
-            grid_taksList_NotifyElements.Visibility = Visibility.Visible;
-        }
-        
-        public void HideNotificationSettings()
+		// Таймер для срабатывания отслеживания количества элементов на рабочем столе
+		DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
 		{
-            this.Width = 600;
-            grid_taksList_NotifyElements.Visibility = Visibility.Hidden;
-        }
+			Interval = new TimeSpan(0, 30, 0)
+		};
 
-        // Если чекбокс активирован - показывается окно с временем и датой
-        private void checkBox_ShowDateTimeWindow_Checked(object sender, RoutedEventArgs e)
-        {
-            if (checkBox_ShowDateTimeWindow.IsChecked == true)
-            {
-                // Окно с показом погоды создается только 1 раз при первом нажатии чекбокса
-                if (dateTimeWindow == null)
-                {
-                    dateTimeWindow = new DateTimeWindow();
-                }
+		// Таймер для ежесекундной проверки совпадения времени уведомления с текущим временем
+		DispatcherTimer checkTaskListNotificationsTimer = new System.Windows.Threading.DispatcherTimer
+		{
+			Interval = new TimeSpan(0, 0, 1)
+		};
 
-                dateTimeWindow.Show();
-            }
-        }
-      
-        private void checkBox_ShowDateTimeWindow_UnChecked(object sender, RoutedEventArgs e)
-        {
-            if (checkBox_ShowDateTimeWindow.IsChecked == false)
-            {
-                dateTimeWindow.Hide();
-            }
-        }
+		public MainWindow()
+		{
+			InitializeComponent();
 
-        // Сохранение введенного текста в файл настроек, чтобы он сохранился даже при перезапуске программы
-        private void textBox_Clipboard_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Control control = (Control)sender;
+			// Скрываем блок с настройками уведомления для списка задач
+			HideNotificationSettings();
 
-            switch (control.Name)
-            {
-                case "textBox_Clipboard_1":
-                    if (!isTextEncrypted)
-                        Properties.Settings.Default.Clipboard_1 = textBox_Clipboard_1.Text;
-                    break;
-                case "textBox_Clipboard_2":
-                    if (!isTextEncrypted)
-                        Properties.Settings.Default.Clipboard_2 = textBox_Clipboard_2.Text;
-                    break;
-                case "textBox_Clipboard_3":
-                    if (!isTextEncrypted)
-                        Properties.Settings.Default.Clipboard_3 = textBox_Clipboard_3.Text;
-                    break;
-                case "textBox_Clipboard_4":
-                    if (!isTextEncrypted)
-                        Properties.Settings.Default.Clipboard_4 = textBox_Clipboard_4.Text;
-                    break;
-                case "textBox_Clipboard_5":
-                    if (!isTextEncrypted)
-                        Properties.Settings.Default.Clipboard_5 = textBox_Clipboard_5.Text;
-                    break;
+			// Заполнение combobox
+			for (int i = 1; i <= 40; i++)
+			{
+				combobox_DesktopNumber.Items.Add(i);
+			}
+			combobox_DesktopNumber.SelectedItem = 20;
 
-                default:
-                    break;
-            }
-        }
+			// Заполнение полей значениями, ранее сохраненными в файл настроек
+			textBox_Clipboard_1.Text = Properties.Settings.Default.Clipboard_1.ToString();
+			textBox_Clipboard_2.Text = Properties.Settings.Default.Clipboard_2.ToString();
+			textBox_Clipboard_3.Text = Properties.Settings.Default.Clipboard_3.ToString();
+			textBox_Clipboard_4.Text = Properties.Settings.Default.Clipboard_4.ToString();
+			textBox_Clipboard_5.Text = Properties.Settings.Default.Clipboard_5.ToString();
 
-        // Кнопка сохранения введеного текста в буфер обмена
-        private void SaveTextToClipBoard(string text)
-        {
-            Clipboard.Clear();
-            Clipboard.SetText(text);
-        }
+			textBox_Tasklist_1.Text = Properties.Settings.Default.Tasklist_1.ToString();
+			textBox_Tasklist_2.Text = Properties.Settings.Default.Tasklist_2.ToString();
+			textBox_Tasklist_3.Text = Properties.Settings.Default.Tasklist_3.ToString();
+			textBox_Tasklist_4.Text = Properties.Settings.Default.Tasklist_4.ToString();
+			textBox_Tasklist_5.Text = Properties.Settings.Default.Tasklist_5.ToString();
 
-        private void button_Clipboard_Click(object sender, RoutedEventArgs e)
-        {
-            Control control = (Control)sender;
+			// Проверка, включен или выключен текстбокс (выполнена/не выполнена задача) с файла настроек,
+			// чтобы восстановить окно в том же виде, в каком оно было до перезапуска программы
+			if (Properties.Settings.Default.Tasklist_1_isEnabled)
+				textBox_Tasklist_1.IsEnabled = true;
+			else
+			{
+				textBox_Tasklist_1.IsEnabled = false;
+				textBox_Tasklist_1.Foreground = Brushes.LightPink;
+			}
 
-            switch (control.Name)
-            {
-                case "button_Clipboard_1":
-                    SaveTextToClipBoard(textBox_Clipboard_1.Text);
-                    break;
-                case "button_Clipboard_2":
-                    SaveTextToClipBoard(textBox_Clipboard_2.Text);
-                    break;
-                case "button_Clipboard_3":
-                    SaveTextToClipBoard(textBox_Clipboard_3.Text);
-                    break;
-                case "button_Clipboard_4":
-                    SaveTextToClipBoard(textBox_Clipboard_4.Text);
-                    break;
-                case "button_Clipboard_5":
-                    SaveTextToClipBoard(textBox_Clipboard_5.Text);
-                    break;
+			if (Properties.Settings.Default.Tasklist_2_isEnabled)
+				textBox_Tasklist_2.IsEnabled = true;
+			else
+			{
+				textBox_Tasklist_2.IsEnabled = false;
+				textBox_Tasklist_2.Foreground = Brushes.LightPink;
+			}
 
-                default:
-                    break;
-            }
-        }
+			if (Properties.Settings.Default.Tasklist_3_isEnabled)
+				textBox_Tasklist_3.IsEnabled = true;
+			else
+			{
+				textBox_Tasklist_3.IsEnabled = false;
+				textBox_Tasklist_3.Foreground = Brushes.LightPink;
+			}
 
-        // При активации весь текст в строках шифруется
-        private void checkBox_Encrypt_Checked(object sender, RoutedEventArgs e)
-        {
-            if (checkBox_Encrypt.IsChecked == true && isTextEncrypted == false)
-            {
-                //шифрование 
-                isTextEncrypted = true;
+			if (Properties.Settings.Default.Tasklist_4_isEnabled)
+				textBox_Tasklist_4.IsEnabled = true;
+			else
+			{
+				textBox_Tasklist_4.IsEnabled = false;
+				textBox_Tasklist_4.Foreground = Brushes.LightPink;
+			}
 
-                var clipboardString = new string[] { textBox_Clipboard_1.Text, textBox_Clipboard_2.Text, textBox_Clipboard_3.Text ,
-                textBox_Clipboard_4.Text,textBox_Clipboard_5.Text};
+			if (Properties.Settings.Default.Tasklist_5_isEnabled)
+				textBox_Tasklist_5.IsEnabled = true;
+			else
+			{
+				textBox_Tasklist_5.IsEnabled = false;
+				textBox_Tasklist_5.Foreground = Brushes.LightPink;
+			}
 
-                string[] encryptedStrings = Cryptographer.Crypt(clipboardString);
-                textBox_Clipboard_1.Text = encryptedStrings[0];
-                textBox_Clipboard_2.Text = encryptedStrings[1];
-                textBox_Clipboard_3.Text = encryptedStrings[2];
-                textBox_Clipboard_4.Text = encryptedStrings[3];
-                textBox_Clipboard_5.Text = encryptedStrings[4];
+			this.Closed += (s, e) => Application.Current.Shutdown();
 
-                var textBoxes = new[] { textBox_Clipboard_1, textBox_Clipboard_2, textBox_Clipboard_3 ,
-                textBox_Clipboard_4,textBox_Clipboard_5};
-
-                foreach (var textBox in textBoxes)
-                {
-                    textBox.IsEnabled = false;
-                }
-            }
-        }
-
-        private void checkBox_Encrypt_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (checkBox_Encrypt.IsChecked == false)
-            {
-                //новое окно - запрос пароля
-                PasswordCheckWindow passwordCheckWindow = new PasswordCheckWindow();
-                passwordCheckWindow.Show();
-
-                // Когда в окне проверки пароля нажали кнопку "submit"
-                passwordCheckWindow.button_submitPassword_Clicked += (s, e) =>
-                {
-                    // Дешифруем строки только если правильно введен пароль в окне проверки пароля
-                    if (passwordCheckWindow.textbox_Password.Text == "13")
-                    {
-                        passwordCheckWindow.Close();
-
-                        // Дешифровка
-                        isTextEncrypted = false;
-
-                        var clipboardString = new string[] { textBox_Clipboard_1.Text, textBox_Clipboard_2.Text, textBox_Clipboard_3.Text ,
-                textBox_Clipboard_4.Text,textBox_Clipboard_5.Text};
-                        string[] decryptedStrings = Cryptographer.Decrypt(clipboardString);
-                        textBox_Clipboard_1.Text = decryptedStrings[0];
-                        textBox_Clipboard_2.Text = decryptedStrings[1];
-                        textBox_Clipboard_3.Text = decryptedStrings[2];
-                        textBox_Clipboard_4.Text = decryptedStrings[3];
-                        textBox_Clipboard_5.Text = decryptedStrings[4];
+			if (!isTextEncrypted)
+			{
+				this.Closed += (s, e) => Properties.Settings.Default.Save();
+			}
 
 
-                        var textBoxes = new[] { textBox_Clipboard_1, textBox_Clipboard_2, textBox_Clipboard_3 ,
-                textBox_Clipboard_4,textBox_Clipboard_5};
-
-                        foreach (var textBox in textBoxes)
-                        {
-                            textBox.IsEnabled = true;
-                        }
-
-                        // Если текст висит незашифрованным дольше 10 секунд - он автоматически шифруется обратно
-                        var twentySecondsTimer = new System.Windows.Threading.DispatcherTimer
-                        {
-                            Interval = new TimeSpan(0, 0, 10)
-                        };
-                        twentySecondsTimer.Tick += (o, t) =>
-                        {
-                            checkBox_Encrypt.IsChecked = true;
-                            twentySecondsTimer.Stop();
-                        };
-                        twentySecondsTimer.Start();
-                    }
-                    else
-                    {
-                        passwordCheckWindow.Close();
-                        MessageBox.Show("Отказано, неверный пароль");
-                        checkBox_Encrypt.IsChecked = true;
-                    }
-                };
-
-            }
-        }
+			//НУЖНА ВЫГРУЗКА ДАТ УВЕДОМЛЕНИЙ С ПРОПЕРТИС
+			checkTaskListNotificationsTimer.Tick += (o, t) =>
+			{
+				//СВЕРКА С КАЖДОЫМ ЭЛЕМЕНТОМ ИЗ СПИСКА
+			};
+		}
 
 
-        private void textBox_Tasklist_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Control control = (Control)sender;
+		// Методы скрытия/показа блока с настройками уведомления для списка задач
+		public void ShowNotificationSettings()
+		{
+			this.Width = 800;
+			grid_taksList_NotifyElements.Visibility = Visibility.Visible;
+		}
 
-            switch (control.Name)
-            {
-                case "textBox_Tasklist_1":
-                    Properties.Settings.Default.Tasklist_1 = textBox_Tasklist_1.Text;
-                    break;
-                case "textBox_Tasklist_2":
-                    Properties.Settings.Default.Tasklist_2 = textBox_Tasklist_2.Text;
-                    break;
-                case "textBox_Tasklist_3":
-                    Properties.Settings.Default.Tasklist_3 = textBox_Tasklist_3.Text;
-                    break;
-                case "textBox_Tasklist_4":
-                    Properties.Settings.Default.Tasklist_4 = textBox_Tasklist_4.Text;
-                    break;
-                case "textBox_Tasklist_5":
-                    Properties.Settings.Default.Tasklist_5 = textBox_Tasklist_5.Text;
-                    break;
+		public void HideNotificationSettings()
+		{
+			this.Width = 600;
+			grid_taksList_NotifyElements.Visibility = Visibility.Hidden;
+		}
 
-                default:
-                    break;
-            };
-        }
+		// Если чекбокс активирован - показывается окно с временем и датой
+		private void checkBox_ShowDateTimeWindow_Checked(object sender, RoutedEventArgs e)
+		{
+			if (checkBox_ShowDateTimeWindow.IsChecked == true)
+			{
+				// Окно с показом погоды создается только 1 раз при первом нажатии чекбокса
+				if (dateTimeWindow == null)
+				{
+					dateTimeWindow = new DateTimeWindow();
+				}
 
-        private void button_SaveTasksInHistory_Click(object sender, RoutedEventArgs e)
-        {
-            void LogTextToFile(TextBox textBox)
-            {
-                string fileName = "DesktopAssistant_TaskHistory.txt";
+				dateTimeWindow.Show();
+			}
+		}
 
-                string textFromTextbox = String.IsNullOrEmpty(textBox.Text) ? "*пусто*" : textBox.Text;
+		private void checkBox_ShowDateTimeWindow_UnChecked(object sender, RoutedEventArgs e)
+		{
+			if (checkBox_ShowDateTimeWindow.IsChecked == false)
+			{
+				dateTimeWindow.Hide();
+			}
+		}
 
-                string textToWrite = $"\n\" {DateTime.Now.ToString()} - ПОЛЕ {textBox.Name} - {textFromTextbox}\n\"";
-                using (StreamWriter writer = new StreamWriter(fileName, true))
-                {
-                    writer.Write(textToWrite);
-                }
-            }
+		// Сохранение введенного текста в файл настроек, чтобы он сохранился даже при перезапуске программы
+		private void textBox_Clipboard_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			Control control = (Control)sender;
 
-            if (String.IsNullOrEmpty(textBox_Tasklist_1.Text) && String.IsNullOrEmpty(textBox_Tasklist_2.Text) &&
-                String.IsNullOrEmpty(textBox_Tasklist_3.Text) && String.IsNullOrEmpty(textBox_Tasklist_4.Text) &&
-                String.IsNullOrEmpty(textBox_Tasklist_5.Text))
-            {
-                MessageBox.Show("Поля пусты, нечего сохранять");
-            }
-            else
-            {
-                LogTextToFile(textBox_Tasklist_1);
-                LogTextToFile(textBox_Tasklist_2);
-                LogTextToFile(textBox_Tasklist_3);
-                LogTextToFile(textBox_Tasklist_4);
-                LogTextToFile(textBox_Tasklist_5);
-            }
+			switch (control.Name)
+			{
+				case "textBox_Clipboard_1":
+					if (!isTextEncrypted)
+						Properties.Settings.Default.Clipboard_1 = textBox_Clipboard_1.Text;
+					break;
+				case "textBox_Clipboard_2":
+					if (!isTextEncrypted)
+						Properties.Settings.Default.Clipboard_2 = textBox_Clipboard_2.Text;
+					break;
+				case "textBox_Clipboard_3":
+					if (!isTextEncrypted)
+						Properties.Settings.Default.Clipboard_3 = textBox_Clipboard_3.Text;
+					break;
+				case "textBox_Clipboard_4":
+					if (!isTextEncrypted)
+						Properties.Settings.Default.Clipboard_4 = textBox_Clipboard_4.Text;
+					break;
+				case "textBox_Clipboard_5":
+					if (!isTextEncrypted)
+						Properties.Settings.Default.Clipboard_5 = textBox_Clipboard_5.Text;
+					break;
 
-        }
+				default:
+					break;
+			}
+		}
 
-        void EnableTextbox(TextBox textBox)
-        {
-            textBox.IsEnabled = true;
-            textBox.Foreground = Brushes.Black;
-        }
+		// Кнопка сохранения введеного текста в буфер обмена
+		private void SaveTextToClipBoard(string text)
+		{
+			Clipboard.Clear();
+			Clipboard.SetText(text);
+		}
 
-        void DisableTextbox(TextBox textBox)
-        {
-            textBox.IsEnabled = false;
-            textBox.Foreground = Brushes.LightPink;
-        }
+		private void button_Clipboard_Click(object sender, RoutedEventArgs e)
+		{
+			Control control = (Control)sender;
 
-        private void button_Tasklist_Done_Click(object sender, RoutedEventArgs e)
-        {
-            Control control = (Control)sender;
-            switch (control.Name)
-            {
-                case "button_Tasklist_1_Done":
-                    if (textBox_Tasklist_1.IsEnabled)
-                    {
-                        DisableTextbox(textBox_Tasklist_1);
-                        Properties.Settings.Default.Tasklist_1_isEnabled = false;
-                        break;
-                    }
-                    else
-                    {
-                        EnableTextbox(textBox_Tasklist_1);
-                        Properties.Settings.Default.Tasklist_1_isEnabled = true;
-                        break;
-                    }
-                    break;
-                case "button_Tasklist_2_Done":
-                    if (textBox_Tasklist_2.IsEnabled)
-                    {
-                        DisableTextbox(textBox_Tasklist_2);
-                        Properties.Settings.Default.Tasklist_2_isEnabled = false;
-                        break;
-                    }
-                    else
-                    {
-                        EnableTextbox(textBox_Tasklist_2);
-                        Properties.Settings.Default.Tasklist_2_isEnabled = true;
-                        break;
-                    }
-                    break;
-                case "button_Tasklist_3_Done":
-                    if (textBox_Tasklist_3.IsEnabled)
-                    {
-                        DisableTextbox(textBox_Tasklist_3);
-                        Properties.Settings.Default.Tasklist_3_isEnabled = false;
-                        break;
-                    }
-                    else
-                    {
-                        EnableTextbox(textBox_Tasklist_3);
-                        Properties.Settings.Default.Tasklist_3_isEnabled = true;
-                        break;
-                    }
-                    break;
-                case "button_Tasklist_4_Done":
-                    if (textBox_Tasklist_4.IsEnabled)
-                    {
-                        DisableTextbox(textBox_Tasklist_4);
-                        Properties.Settings.Default.Tasklist_4_isEnabled = false;
-                        break;
-                    }
-                    else
-                    {
-                        EnableTextbox(textBox_Tasklist_4);
-                        Properties.Settings.Default.Tasklist_4_isEnabled = true;
-                        break;
-                    }
-                    break;
-                case "button_Tasklist_5_Done":
-                    if (textBox_Tasklist_5.IsEnabled)
-                    {
-                        DisableTextbox(textBox_Tasklist_5);
-                        Properties.Settings.Default.Tasklist_5_isEnabled = false;
-                        break;
-                    }
-                    else
-                    {
-                        EnableTextbox(textBox_Tasklist_5);
-                        Properties.Settings.Default.Tasklist_5_isEnabled = true;
-                        break;
-                    }
-                    break;
+			switch (control.Name)
+			{
+				case "button_Clipboard_1":
+					SaveTextToClipBoard(textBox_Clipboard_1.Text);
+					break;
+				case "button_Clipboard_2":
+					SaveTextToClipBoard(textBox_Clipboard_2.Text);
+					break;
+				case "button_Clipboard_3":
+					SaveTextToClipBoard(textBox_Clipboard_3.Text);
+					break;
+				case "button_Clipboard_4":
+					SaveTextToClipBoard(textBox_Clipboard_4.Text);
+					break;
+				case "button_Clipboard_5":
+					SaveTextToClipBoard(textBox_Clipboard_5.Text);
+					break;
 
-                default:
-                    break;
-            }
+				default:
+					break;
+			}
+		}
 
-        }
+		// При активации весь текст в строках шифруется
+		private void checkBox_Encrypt_Checked(object sender, RoutedEventArgs e)
+		{
+			if (checkBox_Encrypt.IsChecked == true && isTextEncrypted == false)
+			{
+				//шифрование 
+				isTextEncrypted = true;
 
-        private void button_Tasklist_Clear_Click(object sender, RoutedEventArgs e)
-        {
-            Control control = (Control)sender;
+				var clipboardString = new string[] { textBox_Clipboard_1.Text, textBox_Clipboard_2.Text, textBox_Clipboard_3.Text ,
+				textBox_Clipboard_4.Text,textBox_Clipboard_5.Text};
 
-            switch (control.Name)
-            {
-                case "button_Tasklist_1_Clear":
-                    textBox_Tasklist_1.Clear();
-                    if (!textBox_Tasklist_1.IsEnabled)
-                    {
-                        EnableTextbox(textBox_Tasklist_1);
-                        Properties.Settings.Default.Tasklist_1_isEnabled = true;
-                    }
-                    break;
-                case "button_Tasklist_2_Clear":
-                    textBox_Tasklist_2.Clear();
-                    if (!textBox_Tasklist_2.IsEnabled)
-                    {
-                        EnableTextbox(textBox_Tasklist_2);
-                        Properties.Settings.Default.Tasklist_2_isEnabled = true;
-                    }
-                    break;
-                case "button_Tasklist_3_Clear":
-                    textBox_Tasklist_3.Clear();
-                    if (!textBox_Tasklist_3.IsEnabled)
-                    {
-                        EnableTextbox(textBox_Tasklist_3);
-                        Properties.Settings.Default.Tasklist_3_isEnabled = true;
-                    }
-                    break;
-                case "button_Tasklist_4_Clear":
-                    textBox_Tasklist_4.Clear();
-                    if (!textBox_Tasklist_4.IsEnabled)
-                    {
-                        EnableTextbox(textBox_Tasklist_4);
-                        Properties.Settings.Default.Tasklist_4_isEnabled = true;
-                    }
-                    break;
-                case "button_Tasklist_5_Clear":
-                    textBox_Tasklist_5.Clear();
-                    if (!textBox_Tasklist_5.IsEnabled)
-                    {
-                        EnableTextbox(textBox_Tasklist_5);
-                        Properties.Settings.Default.Tasklist_5_isEnabled = true;
-                    }
-                    break;
+				string[] encryptedStrings = Cryptographer.Crypt(clipboardString);
+				textBox_Clipboard_1.Text = encryptedStrings[0];
+				textBox_Clipboard_2.Text = encryptedStrings[1];
+				textBox_Clipboard_3.Text = encryptedStrings[2];
+				textBox_Clipboard_4.Text = encryptedStrings[3];
+				textBox_Clipboard_5.Text = encryptedStrings[4];
 
-                default:
-                    break;
-            }
+				var textBoxes = new[] { textBox_Clipboard_1, textBox_Clipboard_2, textBox_Clipboard_3 ,
+				textBox_Clipboard_4,textBox_Clipboard_5};
 
-        }
+				foreach (var textBox in textBoxes)
+				{
+					textBox.IsEnabled = false;
+				}
+			}
+		}
 
-        // Чекбокс мониторинга количества элементов на рабочем столе
-        private void checkBox_DekstopElNumberTracking_Checked(object sender, RoutedEventArgs e)
-        {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+		private void checkBox_Encrypt_Unchecked(object sender, RoutedEventArgs e)
+		{
+			if (checkBox_Encrypt.IsChecked == false)
+			{
+				//новое окно - запрос пароля
+				PasswordCheckWindow passwordCheckWindow = new PasswordCheckWindow();
+				passwordCheckWindow.Show();
 
-            if (checkBox_DekstopElNumberTracking.IsChecked == true)
-            {
-                checkDesktopNumberTimer.Start();
-                checkDesktopNumberTimer.Tick += (o, t) =>
-                {
-                    int fileCountOnDesktop = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly).Length;
-                    label_Desktop_NumberOfFiles.Content = fileCountOnDesktop;
+				// Когда в окне проверки пароля нажали кнопку "submit"
+				passwordCheckWindow.button_submitPassword_Clicked += (s, e) =>
+				{
+					// Дешифруем строки только если правильно введен пароль в окне проверки пароля
+					if (passwordCheckWindow.textbox_Password.Text == "13")
+					{
+						passwordCheckWindow.Close();
+
+						// Дешифровка
+						isTextEncrypted = false;
+
+						var clipboardString = new string[] { textBox_Clipboard_1.Text, textBox_Clipboard_2.Text, textBox_Clipboard_3.Text ,
+				textBox_Clipboard_4.Text,textBox_Clipboard_5.Text};
+						string[] decryptedStrings = Cryptographer.Decrypt(clipboardString);
+						textBox_Clipboard_1.Text = decryptedStrings[0];
+						textBox_Clipboard_2.Text = decryptedStrings[1];
+						textBox_Clipboard_3.Text = decryptedStrings[2];
+						textBox_Clipboard_4.Text = decryptedStrings[3];
+						textBox_Clipboard_5.Text = decryptedStrings[4];
 
 
-                    if (fileCountOnDesktop >= (int)combobox_DesktopNumber.SelectedItem)
-                    {
-                        MessageBox.Show($"На рабочем столе слишком много объектов",
-                        "Рабочий стол забит", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                };
-            }
-        }
+						var textBoxes = new[] { textBox_Clipboard_1, textBox_Clipboard_2, textBox_Clipboard_3 ,
+				textBox_Clipboard_4,textBox_Clipboard_5};
 
-        private void checkBox_DekstopElNumberTracking_Unchecked(object sender, RoutedEventArgs e)
-        {
-            checkDesktopNumberTimer.Stop();
-        }
+						foreach (var textBox in textBoxes)
+						{
+							textBox.IsEnabled = true;
+						}
+
+						// Если текст висит незашифрованным дольше 10 секунд - он автоматически шифруется обратно
+						var twentySecondsTimer = new System.Windows.Threading.DispatcherTimer
+						{
+							Interval = new TimeSpan(0, 0, 10)
+						};
+						twentySecondsTimer.Tick += (o, t) =>
+						{
+							checkBox_Encrypt.IsChecked = true;
+							twentySecondsTimer.Stop();
+						};
+						twentySecondsTimer.Start();
+					}
+					else
+					{
+						passwordCheckWindow.Close();
+						MessageBox.Show("Отказано, неверный пароль");
+						checkBox_Encrypt.IsChecked = true;
+					}
+				};
+
+			}
+		}
+
+
+		private void textBox_Tasklist_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			Control control = (Control)sender;
+
+			switch (control.Name)
+			{
+				case "textBox_Tasklist_1":
+					Properties.Settings.Default.Tasklist_1 = textBox_Tasklist_1.Text;
+					break;
+				case "textBox_Tasklist_2":
+					Properties.Settings.Default.Tasklist_2 = textBox_Tasklist_2.Text;
+					break;
+				case "textBox_Tasklist_3":
+					Properties.Settings.Default.Tasklist_3 = textBox_Tasklist_3.Text;
+					break;
+				case "textBox_Tasklist_4":
+					Properties.Settings.Default.Tasklist_4 = textBox_Tasklist_4.Text;
+					break;
+				case "textBox_Tasklist_5":
+					Properties.Settings.Default.Tasklist_5 = textBox_Tasklist_5.Text;
+					break;
+
+				default:
+					break;
+			};
+		}
+
+		private void button_SaveTasksInHistory_Click(object sender, RoutedEventArgs e)
+		{
+			void LogTextToFile(TextBox textBox)
+			{
+				string fileName = "DesktopAssistant_TaskHistory.txt";
+
+				string textFromTextbox = String.IsNullOrEmpty(textBox.Text) ? "*пусто*" : textBox.Text;
+
+				string textToWrite = $"\n\" {DateTime.Now.ToString()} - ПОЛЕ {textBox.Name} - {textFromTextbox}\n\"";
+				using (StreamWriter writer = new StreamWriter(fileName, true))
+				{
+					writer.Write(textToWrite);
+				}
+			}
+
+			if (String.IsNullOrEmpty(textBox_Tasklist_1.Text) && String.IsNullOrEmpty(textBox_Tasklist_2.Text) &&
+				String.IsNullOrEmpty(textBox_Tasklist_3.Text) && String.IsNullOrEmpty(textBox_Tasklist_4.Text) &&
+				String.IsNullOrEmpty(textBox_Tasklist_5.Text))
+			{
+				MessageBox.Show("Поля пусты, нечего сохранять");
+			}
+			else
+			{
+				LogTextToFile(textBox_Tasklist_1);
+				LogTextToFile(textBox_Tasklist_2);
+				LogTextToFile(textBox_Tasklist_3);
+				LogTextToFile(textBox_Tasklist_4);
+				LogTextToFile(textBox_Tasklist_5);
+			}
+
+		}
+
+		void EnableTextbox(TextBox textBox)
+		{
+			textBox.IsEnabled = true;
+			textBox.Foreground = Brushes.Black;
+		}
+
+		void DisableTextbox(TextBox textBox)
+		{
+			textBox.IsEnabled = false;
+			textBox.Foreground = Brushes.LightPink;
+		}
+
+		private void button_Tasklist_Done_Click(object sender, RoutedEventArgs e)
+		{
+			Control control = (Control)sender;
+			switch (control.Name)
+			{
+				case "button_Tasklist_1_Done":
+					if (textBox_Tasklist_1.IsEnabled)
+					{
+						DisableTextbox(textBox_Tasklist_1);
+						Properties.Settings.Default.Tasklist_1_isEnabled = false;
+						break;
+					}
+					else
+					{
+						EnableTextbox(textBox_Tasklist_1);
+						Properties.Settings.Default.Tasklist_1_isEnabled = true;
+						break;
+					}
+					break;
+				case "button_Tasklist_2_Done":
+					if (textBox_Tasklist_2.IsEnabled)
+					{
+						DisableTextbox(textBox_Tasklist_2);
+						Properties.Settings.Default.Tasklist_2_isEnabled = false;
+						break;
+					}
+					else
+					{
+						EnableTextbox(textBox_Tasklist_2);
+						Properties.Settings.Default.Tasklist_2_isEnabled = true;
+						break;
+					}
+					break;
+				case "button_Tasklist_3_Done":
+					if (textBox_Tasklist_3.IsEnabled)
+					{
+						DisableTextbox(textBox_Tasklist_3);
+						Properties.Settings.Default.Tasklist_3_isEnabled = false;
+						break;
+					}
+					else
+					{
+						EnableTextbox(textBox_Tasklist_3);
+						Properties.Settings.Default.Tasklist_3_isEnabled = true;
+						break;
+					}
+					break;
+				case "button_Tasklist_4_Done":
+					if (textBox_Tasklist_4.IsEnabled)
+					{
+						DisableTextbox(textBox_Tasklist_4);
+						Properties.Settings.Default.Tasklist_4_isEnabled = false;
+						break;
+					}
+					else
+					{
+						EnableTextbox(textBox_Tasklist_4);
+						Properties.Settings.Default.Tasklist_4_isEnabled = true;
+						break;
+					}
+					break;
+				case "button_Tasklist_5_Done":
+					if (textBox_Tasklist_5.IsEnabled)
+					{
+						DisableTextbox(textBox_Tasklist_5);
+						Properties.Settings.Default.Tasklist_5_isEnabled = false;
+						break;
+					}
+					else
+					{
+						EnableTextbox(textBox_Tasklist_5);
+						Properties.Settings.Default.Tasklist_5_isEnabled = true;
+						break;
+					}
+					break;
+
+				default:
+					break;
+			}
+
+		}
+
+		private void button_Tasklist_Clear_Click(object sender, RoutedEventArgs e)
+		{
+			Control control = (Control)sender;
+
+			switch (control.Name)
+			{
+				case "button_Tasklist_1_Clear":
+					textBox_Tasklist_1.Clear();
+					if (!textBox_Tasklist_1.IsEnabled)
+					{
+						EnableTextbox(textBox_Tasklist_1);
+						Properties.Settings.Default.Tasklist_1_isEnabled = true;
+					}
+					break;
+				case "button_Tasklist_2_Clear":
+					textBox_Tasklist_2.Clear();
+					if (!textBox_Tasklist_2.IsEnabled)
+					{
+						EnableTextbox(textBox_Tasklist_2);
+						Properties.Settings.Default.Tasklist_2_isEnabled = true;
+					}
+					break;
+				case "button_Tasklist_3_Clear":
+					textBox_Tasklist_3.Clear();
+					if (!textBox_Tasklist_3.IsEnabled)
+					{
+						EnableTextbox(textBox_Tasklist_3);
+						Properties.Settings.Default.Tasklist_3_isEnabled = true;
+					}
+					break;
+				case "button_Tasklist_4_Clear":
+					textBox_Tasklist_4.Clear();
+					if (!textBox_Tasklist_4.IsEnabled)
+					{
+						EnableTextbox(textBox_Tasklist_4);
+						Properties.Settings.Default.Tasklist_4_isEnabled = true;
+					}
+					break;
+				case "button_Tasklist_5_Clear":
+					textBox_Tasklist_5.Clear();
+					if (!textBox_Tasklist_5.IsEnabled)
+					{
+						EnableTextbox(textBox_Tasklist_5);
+						Properties.Settings.Default.Tasklist_5_isEnabled = true;
+					}
+					break;
+
+				default:
+					break;
+			}
+
+		}
+
+		// Чекбокс мониторинга количества элементов на рабочем столе
+		private void checkBox_DekstopElNumberTracking_Checked(object sender, RoutedEventArgs e)
+		{
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+			if (checkBox_DekstopElNumberTracking.IsChecked == true)
+			{
+				checkDesktopNumberTimer.Start();
+				checkDesktopNumberTimer.Tick += (o, t) =>
+				{
+					int fileCountOnDesktop = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly).Length;
+					label_Desktop_NumberOfFiles.Content = fileCountOnDesktop;
+
+
+					if (fileCountOnDesktop >= (int)combobox_DesktopNumber.SelectedItem)
+					{
+						MessageBox.Show($"На рабочем столе слишком много объектов",
+						"Рабочий стол забит", MessageBoxButton.OK, MessageBoxImage.Warning);
+					}
+				};
+			}
+		}
+
+		private void checkBox_DekstopElNumberTracking_Unchecked(object sender, RoutedEventArgs e)
+		{
+			checkDesktopNumberTimer.Stop();
+		}
 
 		private void button_Tasklist_Notify_Click(object sender, RoutedEventArgs e)
 		{
-            Control control = (Control)sender;
+			Control control = (Control)sender;
 
 			this.Width = 1000;
 
-            switch (control.Name)
-            {
-                case "button_Tasklist_1_Notify":
-                    ShowNotificationSettings();
-                    break;
-                case "button_Tasklist_2_Notify":
-                    ShowNotificationSettings();
-                    break;
-                case "button_Tasklist_3_Notify":
-                    ShowNotificationSettings();
-                    break;
-                case "button_Tasklist_4_Notify":
-                    ShowNotificationSettings();
-                    break;
-                case "button_Tasklist_5_Notify":
-                    ShowNotificationSettings();
-                    break;
-                default:
-                    break;
-            };
-        }
+			switch (control.Name)
+			{
+				case "button_Tasklist_1_Notify":
+					ShowNotificationSettings();
+					break;
+				case "button_Tasklist_2_Notify":
+					ShowNotificationSettings();
+					break;
+				case "button_Tasklist_3_Notify":
+					ShowNotificationSettings();
+					break;
+				case "button_Tasklist_4_Notify":
+					ShowNotificationSettings();
+					break;
+				case "button_Tasklist_5_Notify":
+					ShowNotificationSettings();
+					break;
+				default:
+					break;
+			};
+		}
 
-        // Активации уведомления связанного с задачей
+		// Активации уведомления связанного с задачей
 		private void button_Tasklist_Notif_Act_Click(object sender, RoutedEventArgs e)
 		{
-           // Должен сохраняться в Properties
-            List<TaskListNotification> notificationsList = new List<TaskListNotification>();
+			// Должен сохраняться в Properties
+			List<TaskListNotification> notificationsList = new List<TaskListNotification>();
 
-            var enteredHours = textBox_Notify_Hrs.Text;
-            var enteredMinutes = textBox_Notify_Mins.Text;
+			var enteredHours = textBox_Notify_Hrs.Text;
+			var enteredMinutes = textBox_Notify_Mins.Text;
 
-            TaskListNotification queryMatch = notificationsList.FirstOrDefault(n => n.dateTime.ToString("HH") == enteredHours
-            && n.dateTime.ToString("mm") == enteredMinutes);
+			//СОЗДАНИЕ И СОХРАНЕНИЕ НОВОГО ЭКЗЕМПЛЯРА УВЕДОМЛЕНИЯ
+			//
+			//
+			
+			//ЕЖЕСЕКУНДНАЯ ПРОВЕРКА ПО ТАЙМЕРУ
+			TaskListNotification queryMatch = notificationsList.FirstOrDefault(n => n.dateTime.ToString("HH") == enteredHours
+			&& n.dateTime.ToString("mm") == enteredMinutes);
 
-            if (//если найдена сущность)
+			if (//если найдена сущность)
 			{
-                //Вызываем окно с уведомлением, переносим на него текст (если нужно)
+				//Вызываем окно с уведомлением, переносим на него текст (если нужно)
 			}
-            else
+			else
 			{
-                //Ошибка
+				//Ошибка
 			}
-            
-            HideNotificationSettings();
+
+			HideNotificationSettings();
 		}
 
 
