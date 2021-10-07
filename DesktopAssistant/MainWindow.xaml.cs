@@ -17,7 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Drawing;
-
+using System.Globalization;
 
 namespace DesktopAssistant
 {
@@ -118,20 +118,49 @@ namespace DesktopAssistant
 				this.Closed += (s, e) => Properties.Settings.Default.Save();
 			}
 
+			// Выгрузка списка установленных уведомлений из Properties 
+			// + если список уведомлений не пустой - сразу запускаем тикать проверяющий таймер
+			if (Properties.Settings.Default.ListOfNotifications != null)
+			{
+				if (Properties.Settings.Default.ListOfNotifications.Any())
+				{
+					img_activeNotifications.Visibility = Visibility.Visible;
+					checkTaskListNotificationsTimer.Start();
+				}
+			}
 
-			//НУЖНА ВЫГРУЗКА ДАТ УВЕДОМЛЕНИЙ С ПРОПЕРТИС
+
+			// Таймер, сопоставляющий текущее время с сохраненными данными об уведомлениях
 			checkTaskListNotificationsTimer.Tick += (o, t) =>
 			{
-				//СВЕРКА С КАЖДОЫМ ЭЛЕМЕНТОМ ИЗ СПИСКА
+				var queryMatch = Properties.Settings.Default.ListOfNotifications.FirstOrDefault(n =>
+				n.dateTime.ToString("HH") == DateTime.Now.ToString("HH") && n.dateTime.ToString("mm") == DateTime.Now.ToString("mm"));
+
+				if (queryMatch != null)
+				{
+					NotificationWindow notificationWindow = new NotificationWindow();
+					notificationWindow.Show();
+
+					// Когда уведомление отработало - удаляем его из списка уведомлений
+					Properties.Settings.Default.ListOfNotifications.Remove(queryMatch);
+
+					if (!Properties.Settings.Default.ListOfNotifications.Any())
+					{
+						img_activeNotifications.Visibility = Visibility.Hidden;
+					}
+				}
 			};
 		}
 
 
-		// Методы скрытия/показа блока с настройками уведомления для списка задач
-		public void ShowNotificationSettings()
+		// Методы скрытия/показа блока с настройками уведомления для списка задач. Сразу же
+		// сохраняет в отдельный лейбл номер кнопки, которая вызвала этот метод
+		public void ShowNotificationSettings(int buttonSenderNumber)
 		{
 			this.Width = 800;
 			grid_taksList_NotifyElements.Visibility = Visibility.Visible;
+
+			label_WhichButtonOpenedNotifEditor.Content = buttonSenderNumber;
 		}
 
 		public void HideNotificationSettings()
@@ -408,7 +437,6 @@ namespace DesktopAssistant
 						Properties.Settings.Default.Tasklist_1_isEnabled = true;
 						break;
 					}
-					break;
 				case "button_Tasklist_2_Done":
 					if (textBox_Tasklist_2.IsEnabled)
 					{
@@ -422,7 +450,6 @@ namespace DesktopAssistant
 						Properties.Settings.Default.Tasklist_2_isEnabled = true;
 						break;
 					}
-					break;
 				case "button_Tasklist_3_Done":
 					if (textBox_Tasklist_3.IsEnabled)
 					{
@@ -436,7 +463,6 @@ namespace DesktopAssistant
 						Properties.Settings.Default.Tasklist_3_isEnabled = true;
 						break;
 					}
-					break;
 				case "button_Tasklist_4_Done":
 					if (textBox_Tasklist_4.IsEnabled)
 					{
@@ -450,7 +476,6 @@ namespace DesktopAssistant
 						Properties.Settings.Default.Tasklist_4_isEnabled = true;
 						break;
 					}
-					break;
 				case "button_Tasklist_5_Done":
 					if (textBox_Tasklist_5.IsEnabled)
 					{
@@ -464,7 +489,6 @@ namespace DesktopAssistant
 						Properties.Settings.Default.Tasklist_5_isEnabled = true;
 						break;
 					}
-					break;
 
 				default:
 					break;
@@ -562,19 +586,19 @@ namespace DesktopAssistant
 			switch (control.Name)
 			{
 				case "button_Tasklist_1_Notify":
-					ShowNotificationSettings();
+					ShowNotificationSettings(1);
 					break;
 				case "button_Tasklist_2_Notify":
-					ShowNotificationSettings();
+					ShowNotificationSettings(2);
 					break;
 				case "button_Tasklist_3_Notify":
-					ShowNotificationSettings();
+					ShowNotificationSettings(3);
 					break;
 				case "button_Tasklist_4_Notify":
-					ShowNotificationSettings();
+					ShowNotificationSettings(4);
 					break;
 				case "button_Tasklist_5_Notify":
-					ShowNotificationSettings();
+					ShowNotificationSettings(5);
 					break;
 				default:
 					break;
@@ -584,32 +608,73 @@ namespace DesktopAssistant
 		// Активации уведомления связанного с задачей
 		private void button_Tasklist_Notif_Act_Click(object sender, RoutedEventArgs e)
 		{
-			// Должен сохраняться в Properties
-			List<TaskListNotification> notificationsList = new List<TaskListNotification>();
-
+			var selectedDate = datePicker_Notify.SelectedDate;
 			var enteredHours = textBox_Notify_Hrs.Text;
 			var enteredMinutes = textBox_Notify_Mins.Text;
+			var pickedDate = (DateTime)selectedDate;
 
-			//СОЗДАНИЕ И СОХРАНЕНИЕ НОВОГО ЭКЗЕМПЛЯРА УВЕДОМЛЕНИЯ
-			//
-			//
-			
-			//ЕЖЕСЕКУНДНАЯ ПРОВЕРКА ПО ТАЙМЕРУ
-			TaskListNotification queryMatch = notificationsList.FirstOrDefault(n => n.dateTime.ToString("HH") == enteredHours
-			&& n.dateTime.ToString("mm") == enteredMinutes);
+			var date = pickedDate.ToString("dd.MM.yy");
+			var time = $"{enteredHours}:{enteredMinutes}:00";
 
-			if (//если найдена сущность)
+			var dateTimeToSave = DateTime.ParseExact($"{date} {time}", "dd.MM.yy HH:mm:ss", CultureInfo.InvariantCulture);
+
+			// Проверка с какой именно кнопки произошел вызов окна с настройками уведомления
+			int whichButtonOpenedNotifEditor = 0;
+
+			switch (label_WhichButtonOpenedNotifEditor.Content)
 			{
-				//Вызываем окно с уведомлением, переносим на него текст (если нужно)
+				case 1:
+					whichButtonOpenedNotifEditor = 1;
+					break;
+				case 2:
+					whichButtonOpenedNotifEditor = 2;
+					break;
+				case 3:
+					whichButtonOpenedNotifEditor = 3;
+					break;
+				case 4:
+					whichButtonOpenedNotifEditor = 4;
+					break;
+				case 5:
+					whichButtonOpenedNotifEditor = 5;
+					break;
+				default:
+					break;
+			};
+
+
+			try
+			{
+				// Создание уведомления и добавление его в список в файле настроек
+				var newNotification = new TaskListNotification(dateTimeToSave, whichButtonOpenedNotifEditor);
+				//var newNotification = new TaskListNotification() { DateTime = dateTimeToSave,  TaksListTextboxNumber = whichButtonOpenedNotifEditor };
+
+				if (Properties.Settings.Default.ListOfNotifications == null)
+				{
+					Properties.Settings.Default.ListOfNotifications = new List<TaskListNotification>();
+					Properties.Settings.Default.ListOfNotifications.Add(newNotification);
+					img_activeNotifications.Visibility = Visibility.Visible;
+
+					checkTaskListNotificationsTimer.Start();
+				}
+				else
+				{
+					Properties.Settings.Default.ListOfNotifications.Add(newNotification);
+					img_activeNotifications.Visibility = Visibility.Visible;
+				}
 			}
-			else
+			catch (Exception)
 			{
-				//Ошибка
+				MessageBox.Show($"Ошибка сохранения уведомления",
+						"ОШИБКА", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
 			HideNotificationSettings();
 		}
 
-
+		private void button_Tasklist_Notif_Cancel_Click(object sender, RoutedEventArgs e)
+		{
+			HideNotificationSettings();
+		}
 	}
 }

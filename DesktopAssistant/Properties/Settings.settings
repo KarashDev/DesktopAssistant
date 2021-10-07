@@ -47,5 +47,8 @@
     <Setting Name="Tasklist_5_isEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ListOfNotifications" Type="System.Collections.Generic.List&lt;DesktopAssistant.TaskListNotification&gt;" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

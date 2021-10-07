@@ -54,11 +54,14 @@
 			</Button>
 			<Grid Name="grid_taksList_NotifyElements" Margin="326,111,60,123"
 				  >
-				<Button x:Name="button_Tasklist_Notif_Act" Content="Activate" HorizontalAlignment="Center" Margin="0,94,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.553" Click="button_Tasklist_Notif_Act_Click"/>
+				<Button x:Name="button_Tasklist_Notif_Act" Content="Activate" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.553" Click="button_Tasklist_Notif_Act_Click"/>
 				<TextBox x:Name="textBox_Notify_Mins" HorizontalAlignment="Left" Margin="84,62,0,0" Text="00" TextWrapping="Wrap" VerticalAlignment="Top" Width="22"/>
 				<TextBox x:Name="textBox_Notify_Hrs" HorizontalAlignment="Left" Margin="46,62,0,0" Text="00" TextWrapping="Wrap" VerticalAlignment="Top" Width="23"/>
 				<DatePicker x:Name="datePicker_Notify" HorizontalAlignment="Center" Margin="0,23,0,0" VerticalAlignment="Top"/>
+				<Button x:Name="button_Tasklist_Notif_Act_Copy" Content="Cancel" HorizontalAlignment="Left" Margin="75,96,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.553" Click="button_Tasklist_Notif_Cancel_Click"/>
 			</Grid>
+			<Label x:Name="label_WhichButtonOpenedNotifEditor" Content="Label" HorizontalAlignment="Left" Margin="357,16,0,0" VerticalAlignment="Top"/>
+			<Image x:Name="img_activeNotifications" HorizontalAlignment="Left" Height="22" Margin="106,44,0,0" VerticalAlignment="Top" Width="22" Source="/notifReminder.png" Cursor="Hand" Visibility="Hidden"/>
 		</Grid>
 		<CheckBox x:Name="checkBox_DekstopElNumberTracking" Content="Мониторить раб. стол" HorizontalAlignment="Left" Margin="79,19,0,0" VerticalAlignment="Top" Checked="checkBox_DekstopElNumberTracking_Checked" Unchecked="checkBox_DekstopElNumberTracking_Unchecked"/>
 		<Label x:Name="label_Desktop_NumberOfFiles" Content="*...*" HorizontalAlignment="Left" Margin="226,14,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>

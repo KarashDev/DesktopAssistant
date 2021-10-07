@@ -202,5 +202,16 @@ namespace DesktopAssistant.Properties {
                 this["Tasklist_5_isEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.List<DesktopAssistant.TaskListNotification> ListOfNotifications {
+            get {
+                return ((global::System.Collections.Generic.List<DesktopAssistant.TaskListNotification>)(this["ListOfNotifications"]));
+            }
+            set {
+                this["ListOfNotifications"] = value;
+            }
+        }
     }
 }
