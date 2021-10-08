@@ -69,6 +69,9 @@ namespace DesktopAssistant
 			textBox_Tasklist_4.Text = Properties.Settings.Default.Tasklist_4.ToString();
 			textBox_Tasklist_5.Text = Properties.Settings.Default.Tasklist_5.ToString();
 
+			// Заполнение поля выбора даты уведомления текущей датой
+			datePicker_Notify.SelectedDate = DateTime.Now;
+
 			// Проверка, включен или выключен текстбокс (выполнена/не выполнена задача) с файла настроек,
 			// чтобы восстановить окно в том же виде, в каком оно было до перезапуска программы
 			if (Properties.Settings.Default.Tasklist_1_isEnabled)
@@ -119,30 +122,40 @@ namespace DesktopAssistant
 			}
 
 			// Выгрузка списка установленных уведомлений из Properties 
+			// + выгружаем данные об уведомлениях в окошко с Listbox
 			// + если список уведомлений не пустой - сразу запускаем тикать проверяющий таймер
-			if (Properties.Settings.Default.ListOfNotifications != null)
+			if (Properties.Settings.Default.ListOfNotifications != null && Properties.Settings.Default.ListOfNotifications.Any())
 			{
-				if (Properties.Settings.Default.ListOfNotifications.Any())
+				foreach (var notification in Properties.Settings.Default.ListOfNotifications)
 				{
-					img_activeNotifications.Visibility = Visibility.Visible;
-					checkTaskListNotificationsTimer.Start();
+					string billetForListbox = $"{notification.TaksListTextboxNumber}---{notification.dateTime}";
+					listBox_ActiveNotifs.Items.Add(billetForListbox);
 				}
+
+				RegulateListboxSizeWindow();
+				img_activeNotifications.Visibility = Visibility.Visible;
+				
+				
+				checkTaskListNotificationsTimer.Start();
 			}
+			else button_clearNotifications.IsEnabled = false;
 
 
 			// Таймер, сопоставляющий текущее время с сохраненными данными об уведомлениях
 			checkTaskListNotificationsTimer.Tick += (o, t) =>
 			{
-				var queryMatch = Properties.Settings.Default.ListOfNotifications.FirstOrDefault(n =>
-				n.dateTime.ToString("HH") == DateTime.Now.ToString("HH") && n.dateTime.ToString("mm") == DateTime.Now.ToString("mm"));
+				var queryMatch = Properties.Settings.Default.ListOfNotifications.FirstOrDefault(tn =>
+				tn.dateTime.ToString("HH") == DateTime.Now.ToString("HH") && tn.dateTime.ToString("mm") == DateTime.Now.ToString("mm"));
 
 				if (queryMatch != null)
 				{
 					NotificationWindow notificationWindow = new NotificationWindow();
 					notificationWindow.Show();
+					notificationWindow.label_NotificationText.Content = Convert.ToString($"{queryMatch.TaksListTextboxNumber}: ");
 
 					// Когда уведомление отработало - удаляем его из списка уведомлений
 					Properties.Settings.Default.ListOfNotifications.Remove(queryMatch);
+					listBox_ActiveNotifs.Items.Remove($"{queryMatch.TaksListTextboxNumber}---{queryMatch.dateTime}");
 
 					if (!Properties.Settings.Default.ListOfNotifications.Any())
 					{
@@ -152,6 +165,30 @@ namespace DesktopAssistant
 			};
 		}
 
+		// Метод регулировки размера окошка с информацией об уведомлениях, в зависимости от количества активных уведомлений
+		public void RegulateListboxSizeWindow()
+		{
+			switch (listBox_ActiveNotifs.Items.Count)
+			{
+				case 1:
+					listBox_ActiveNotifs.Height = 25;
+					break;
+				case 2:
+					listBox_ActiveNotifs.Height = 45;
+					break;
+				case 3:
+					listBox_ActiveNotifs.Height = 65;
+					break;
+				case 4:
+					listBox_ActiveNotifs.Height = 85;
+					break;
+				case 5:
+					listBox_ActiveNotifs.Height = 105;
+					break;
+				default:
+					break;
+			};
+		}
 
 		// Методы скрытия/показа блока с настройками уведомления для списка задач. Сразу же
 		// сохраняет в отдельный лейбл номер кнопки, которая вызвала этот метод
@@ -642,18 +679,24 @@ namespace DesktopAssistant
 					break;
 			};
 
-
 			try
 			{
 				// Создание уведомления и добавление его в список в файле настроек
-				var newNotification = new TaskListNotification(dateTimeToSave, whichButtonOpenedNotifEditor);
-				//var newNotification = new TaskListNotification() { DateTime = dateTimeToSave,  TaksListTextboxNumber = whichButtonOpenedNotifEditor };
+				//var newNotification = new TaskListNotification(dateTimeToSave, whichButtonOpenedNotifEditor);
+				//var newNotification = new TaskListNotification(dateTimeToSave);
+				//var newNotification = new TaskListNotification() { dateTime = dateTimeToSave };
+				var newNotification = new TaskListNotification() { dateTime = dateTimeToSave, TaksListTextboxNumber = whichButtonOpenedNotifEditor };
 
 				if (Properties.Settings.Default.ListOfNotifications == null)
 				{
 					Properties.Settings.Default.ListOfNotifications = new List<TaskListNotification>();
 					Properties.Settings.Default.ListOfNotifications.Add(newNotification);
+
+					string billetForListbox = $"{newNotification.TaksListTextboxNumber}---{newNotification.dateTime}";
+					listBox_ActiveNotifs.Items.Add(billetForListbox);
+
 					img_activeNotifications.Visibility = Visibility.Visible;
+					button_clearNotifications.IsEnabled = true;
 
 					checkTaskListNotificationsTimer.Start();
 				}
@@ -661,6 +704,10 @@ namespace DesktopAssistant
 				{
 					Properties.Settings.Default.ListOfNotifications.Add(newNotification);
 					img_activeNotifications.Visibility = Visibility.Visible;
+					button_clearNotifications.IsEnabled = true;
+
+					string billetForListbox = $"{newNotification.TaksListTextboxNumber}---{newNotification.dateTime}";
+					listBox_ActiveNotifs.Items.Add(billetForListbox);
 				}
 			}
 			catch (Exception)
@@ -675,6 +722,29 @@ namespace DesktopAssistant
 		private void button_Tasklist_Notif_Cancel_Click(object sender, RoutedEventArgs e)
 		{
 			HideNotificationSettings();
+		}
+
+		private void button_ClearNotifications_Click(object sender, RoutedEventArgs e)
+		{
+			Properties.Settings.Default.ListOfNotifications.Clear();
+			
+			button_clearNotifications.IsEnabled = false;
+			img_activeNotifications.Visibility = Visibility.Hidden;
+		}
+
+		// Методы отображения/скрытия окошка с информацией об установленных уведомлениях, при наведении
+		// мыши на колокольчик
+		private void img_activeNotifications_MouseEnter(object sender, MouseEventArgs e)
+		{
+			RegulateListboxSizeWindow();
+
+			grid_ActiveNotifsInfo.Visibility = Visibility.Visible;
+		}
+
+		private void img_activeNotifications_MouseLeave(object sender, MouseEventArgs e)
+		{
+			if (grid_ActiveNotifsInfo.Visibility == Visibility.Visible)
+				grid_ActiveNotifsInfo.Visibility = Visibility.Hidden;
 		}
 	}
 }
