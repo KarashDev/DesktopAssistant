@@ -4,10 +4,20 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <PackageIcon>notifReminder.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/KarashDev/DesktopAssistant.git</RepositoryUrl>
+    <Authors>Ivan Karash</Authors>
+    <Description>MY BABY</Description>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="notifReminder.png" />
+    <None Include="..\..\notifReminder.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

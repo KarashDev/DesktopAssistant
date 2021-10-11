@@ -2,21 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Drawing;
 using System.Globalization;
 
 namespace DesktopAssistant
@@ -41,6 +31,7 @@ namespace DesktopAssistant
 		{
 			Interval = new TimeSpan(0, 0, 1)
 		};
+
 
 		public MainWindow()
 		{
@@ -122,20 +113,18 @@ namespace DesktopAssistant
 			}
 
 			// Выгрузка списка установленных уведомлений из Properties 
+			// + если список уведомлений не пустой -сразу запускаем тикать проверяющий таймер
 			// + выгружаем данные об уведомлениях в окошко с Listbox
-			// + если список уведомлений не пустой - сразу запускаем тикать проверяющий таймер
 			if (Properties.Settings.Default.ListOfNotifications != null && Properties.Settings.Default.ListOfNotifications.Any())
 			{
 				foreach (var notification in Properties.Settings.Default.ListOfNotifications)
 				{
-					string billetForListbox = $"{notification.TaksListTextboxNumber}---{notification.dateTime}";
-					listBox_ActiveNotifs.Items.Add(billetForListbox);
+					FillListBoxWithActNotifs(notification);
 				}
 
 				RegulateListboxSizeWindow();
 				img_activeNotifications.Visibility = Visibility.Visible;
-				
-				
+
 				checkTaskListNotificationsTimer.Start();
 			}
 			else button_clearNotifications.IsEnabled = false;
@@ -147,6 +136,7 @@ namespace DesktopAssistant
 				var queryMatch = Properties.Settings.Default.ListOfNotifications.FirstOrDefault(tn =>
 				tn.dateTime.ToString("HH") == DateTime.Now.ToString("HH") && tn.dateTime.ToString("mm") == DateTime.Now.ToString("mm"));
 
+				// Показ уведомления
 				if (queryMatch != null)
 				{
 					NotificationWindow notificationWindow = new NotificationWindow();
@@ -160,9 +150,22 @@ namespace DesktopAssistant
 					if (!Properties.Settings.Default.ListOfNotifications.Any())
 					{
 						img_activeNotifications.Visibility = Visibility.Hidden;
+						button_clearNotifications.IsEnabled = false;
 					}
 				}
 			};
+
+			// Этот код убирает окно из таскбара alt-tab
+			Window helperWindow = new Window(); // Create helper window
+			helperWindow.Top = -100; // Location of new window is outside of visible part of screen
+			helperWindow.Left = -100;
+			helperWindow.Width = 1; // size of window is enough small to avoid its appearance at the beginning
+			helperWindow.Height = 1;
+			helperWindow.WindowStyle = WindowStyle.ToolWindow; // Set window style as ToolWindow to avoid its icon in AltTab 
+			helperWindow.ShowInTaskbar = false;
+			helperWindow.Show(); // We need to show window before set is as owner to our main window
+			this.Owner = helperWindow; // Okey, this will result to disappear icon for main window.
+			helperWindow.Hide(); // Hide helper window just in case
 		}
 
 		// Метод регулировки размера окошка с информацией об уведомлениях, в зависимости от количества активных уведомлений
@@ -380,7 +383,6 @@ namespace DesktopAssistant
 						checkBox_Encrypt.IsChecked = true;
 					}
 				};
-
 			}
 		}
 
@@ -642,6 +644,12 @@ namespace DesktopAssistant
 			};
 		}
 
+		void FillListBoxWithActNotifs(TaskListNotification notification)
+		{
+			string billetForListbox = $"{notification.TaksListTextboxNumber}---{notification.dateTime}";
+			listBox_ActiveNotifs.Items.Add(billetForListbox);
+		}
+
 		// Активации уведомления связанного с задачей
 		private void button_Tasklist_Notif_Act_Click(object sender, RoutedEventArgs e)
 		{
@@ -652,67 +660,54 @@ namespace DesktopAssistant
 
 			var date = pickedDate.ToString("dd.MM.yy");
 			var time = $"{enteredHours}:{enteredMinutes}:00";
-
-			var dateTimeToSave = DateTime.ParseExact($"{date} {time}", "dd.MM.yy HH:mm:ss", CultureInfo.InvariantCulture);
-
-			// Проверка с какой именно кнопки произошел вызов окна с настройками уведомления
-			int whichButtonOpenedNotifEditor = 0;
-
-			switch (label_WhichButtonOpenedNotifEditor.Content)
-			{
-				case 1:
-					whichButtonOpenedNotifEditor = 1;
-					break;
-				case 2:
-					whichButtonOpenedNotifEditor = 2;
-					break;
-				case 3:
-					whichButtonOpenedNotifEditor = 3;
-					break;
-				case 4:
-					whichButtonOpenedNotifEditor = 4;
-					break;
-				case 5:
-					whichButtonOpenedNotifEditor = 5;
-					break;
-				default:
-					break;
-			};
-
+			
 			try
 			{
+				var dateTimeToSave = DateTime.ParseExact($"{date} {time}", "dd.MM.yy HH:mm:ss", CultureInfo.InvariantCulture);
+
+				// Проверка с какой именно кнопки произошел вызов окна с настройками уведомления
+				int whichButtonOpenedNotifEditor = 0;
+
+				switch (label_WhichButtonOpenedNotifEditor.Content)
+				{
+					case 1:
+						whichButtonOpenedNotifEditor = 1;
+						break;
+					case 2:
+						whichButtonOpenedNotifEditor = 2;
+						break;
+					case 3:
+						whichButtonOpenedNotifEditor = 3;
+						break;
+					case 4:
+						whichButtonOpenedNotifEditor = 4;
+						break;
+					case 5:
+						whichButtonOpenedNotifEditor = 5;
+						break;
+					default:
+						break;
+				};
+
 				// Создание уведомления и добавление его в список в файле настроек
-				//var newNotification = new TaskListNotification(dateTimeToSave, whichButtonOpenedNotifEditor);
-				//var newNotification = new TaskListNotification(dateTimeToSave);
-				//var newNotification = new TaskListNotification() { dateTime = dateTimeToSave };
 				var newNotification = new TaskListNotification() { dateTime = dateTimeToSave, TaksListTextboxNumber = whichButtonOpenedNotifEditor };
 
 				if (Properties.Settings.Default.ListOfNotifications == null)
 				{
 					Properties.Settings.Default.ListOfNotifications = new List<TaskListNotification>();
-					Properties.Settings.Default.ListOfNotifications.Add(newNotification);
-
-					string billetForListbox = $"{newNotification.TaksListTextboxNumber}---{newNotification.dateTime}";
-					listBox_ActiveNotifs.Items.Add(billetForListbox);
-
-					img_activeNotifications.Visibility = Visibility.Visible;
-					button_clearNotifications.IsEnabled = true;
-
-					checkTaskListNotificationsTimer.Start();
 				}
-				else
-				{
-					Properties.Settings.Default.ListOfNotifications.Add(newNotification);
-					img_activeNotifications.Visibility = Visibility.Visible;
-					button_clearNotifications.IsEnabled = true;
 
-					string billetForListbox = $"{newNotification.TaksListTextboxNumber}---{newNotification.dateTime}";
-					listBox_ActiveNotifs.Items.Add(billetForListbox);
-				}
+				Properties.Settings.Default.ListOfNotifications.Add(newNotification);
+				img_activeNotifications.Visibility = Visibility.Visible;
+				button_clearNotifications.IsEnabled = true;
+
+				FillListBoxWithActNotifs(newNotification);
+
+				checkTaskListNotificationsTimer.Start();
 			}
 			catch (Exception)
 			{
-				MessageBox.Show($"Ошибка сохранения уведомления",
+				MessageBox.Show($"Ошибка при создании уведомления",
 						"ОШИБКА", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
@@ -727,7 +722,7 @@ namespace DesktopAssistant
 		private void button_ClearNotifications_Click(object sender, RoutedEventArgs e)
 		{
 			Properties.Settings.Default.ListOfNotifications.Clear();
-			
+
 			button_clearNotifications.IsEnabled = false;
 			img_activeNotifications.Visibility = Visibility.Hidden;
 		}
@@ -745,6 +740,25 @@ namespace DesktopAssistant
 		{
 			if (grid_ActiveNotifsInfo.Visibility == Visibility.Visible)
 				grid_ActiveNotifsInfo.Visibility = Visibility.Hidden;
+		}
+
+		private void MainWindow_StateChanged(object sender, EventArgs e)
+		{
+			switch (this.WindowState)
+			{
+				case WindowState.Maximized:
+					break;
+				case WindowState.Minimized:
+					if (dateTimeWindow != null && dateTimeWindow.Visibility == Visibility.Visible)
+					{
+						this.ShowInTaskbar = false;
+						dateTimeWindow.isMainFormHidden = true;
+						Mouse.OverrideCursor = Cursors.Hand;
+					}
+					break;
+				case WindowState.Normal:
+					break;
+			}
 		}
 	}
 }
