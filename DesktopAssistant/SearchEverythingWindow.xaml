@@ -1,0 +1,14 @@
+﻿<Window x:Class="DesktopAssistant.SearchEverythingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopAssistant"
+        mc:Ignorable="d"
+        Title="SearchEverythingWindow" Height="450" Width="800">
+	<Grid>
+		<TextBox x:Name="textBox_Search" HorizontalAlignment="Left" Margin="274,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="327" Height="33" FontSize="25" Text="DesktopAssistant"/>
+		<DataGrid x:Name="dataGrid_SearchResults" Margin="200,125,200,44"/>
+		<Button x:Name="button_Search" Content="Search" HorizontalAlignment="Left" Margin="649,55,0,0" VerticalAlignment="Top" Click="button_Search_Click"/>
+	</Grid>
+</Window>

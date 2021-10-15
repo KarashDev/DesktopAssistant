@@ -22,7 +22,7 @@ namespace DesktopAssistant
 
 			ShowInTaskbar = false;
 
-			// Этот код убирает окно из таскбара alt-tab
+			// Этот код убирает окно из таскбара alt-tab. Это костыль, однако другого рабочего способа не найдено.
 			Window helperWindow = new Window(); // Create helper window
 			helperWindow.Top = -100; // Location of new window is outside of visible part of screen
 			helperWindow.Left = -100;
@@ -50,7 +50,6 @@ namespace DesktopAssistant
 			secondsTimer.Start();
 			secondsTimer.Tick += (o, t) =>
 			{
-				//label_Time_Hrs_Mins.Content = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 				label_Time_Hrs_Mins.Content = DateTime.Now.ToString("HH:mm", CultureInfo.InvariantCulture);
 				label_Time_Secs.Content = DateTime.Now.ToString("ss", CultureInfo.InvariantCulture);
 			};

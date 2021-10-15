@@ -16,9 +16,12 @@ namespace DesktopAssistant
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		// Инициализация этих окон вынесена сюда для дальнейшего контроля наличия только
+		// одного существующего экземпляра
 		private DateTimeWindow dateTimeWindow;
+		private LinkDocumentToTasklistWindow docsWindow;
 
-		bool isTextEncrypted = false;
+		private bool isTextEncrypted = false;
 
 		// Таймер для срабатывания отслеживания количества элементов на рабочем столе
 		DispatcherTimer checkDesktopNumberTimer = new System.Windows.Threading.DispatcherTimer
@@ -588,6 +591,72 @@ namespace DesktopAssistant
 
 		}
 
+		//!IsWindowOpen<Window>("TasklistDocumentWindow"))
+		//public static bool IsWindowOpen<T>(string name = "") where T : Window
+		//{
+		//	return string.IsNullOrEmpty(name)
+		//	   ? Application.Current.Windows.OfType<T>().Any()
+		//	   : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
+		//}
+
+
+		private void button_Tasklist_ShowLinkedDoc_Click(object sender, RoutedEventArgs e)
+		{
+			Control control = (Control)sender;
+
+			for (int i = 1; i <= 5; i++)
+			{
+				if(control.Name == $"button_Tasklist_{i}_ShowLinkedDoc")
+					if (docsWindow == null)
+					{
+						docsWindow = new LinkDocumentToTasklistWindow();
+						docsWindow.label_taskListNumber.Content = $"Номер таска :{i}";
+						docsWindow.Show();
+					}
+					else
+					{
+						docsWindow.label_taskListNumber.Content = $"Номер таска :{i}";
+						docsWindow.Show();
+					}
+			}
+
+
+			// 1 Логика выбора файла, файл должен храниться в каком-то объекте
+			// 2 Сопоставление объекта файла с кнопкой по номеру таскбара, привязка (возможно словарь)
+
+
+			//for (int i = 1; i <= 5; i++)
+			//{
+			//	if((int)docsWindow.label_taskListNumber.Content == i)
+			//	{
+					
+			//	}
+			//}
+
+
+			//switch ((int)docsWindow.label_taskListNumber.Content)
+			//{
+			//	case 1:
+			//		Properties.Settings.Default.Tasklist_1 = textBox_Tasklist_1.Text;
+			//		break;
+			//	case 2:
+			//		Properties.Settings.Default.Tasklist_2 = textBox_Tasklist_2.Text;
+			//		break;
+			//	case 3:
+			//		Properties.Settings.Default.Tasklist_3 = textBox_Tasklist_3.Text;
+			//		break;
+			//	case 4:
+			//		Properties.Settings.Default.Tasklist_4 = textBox_Tasklist_4.Text;
+			//		break;
+			//	case 5:
+			//		Properties.Settings.Default.Tasklist_5 = textBox_Tasklist_5.Text;
+			//		break;
+
+			//	default:
+			//		break;
+			//};
+		}
+
 		// Чекбокс мониторинга количества элементов на рабочем столе
 		private void checkBox_DekstopElNumberTracking_Checked(object sender, RoutedEventArgs e)
 		{
@@ -660,7 +729,7 @@ namespace DesktopAssistant
 
 			var date = pickedDate.ToString("dd.MM.yy");
 			var time = $"{enteredHours}:{enteredMinutes}:00";
-			
+
 			try
 			{
 				var dateTimeToSave = DateTime.ParseExact($"{date} {time}", "dd.MM.yy HH:mm:ss", CultureInfo.InvariantCulture);
@@ -759,6 +828,12 @@ namespace DesktopAssistant
 				case WindowState.Normal:
 					break;
 			}
+		}
+
+		private void button_Search_Click(object sender, RoutedEventArgs e)
+		{
+			SearchEverythingWindow searchWindow = new SearchEverythingWindow();
+			searchWindow.Show();
 		}
 	}
 }

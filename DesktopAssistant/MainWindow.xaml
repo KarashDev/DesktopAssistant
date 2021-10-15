@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopAssistant"
         mc:Ignorable="d"
-        Title="Desktop assistant" Height="454" Width="818" StateChanged="MainWindow_StateChanged">
-	<Grid Margin="0,0,0,12">
+        Title="Desktop assistant" Height="454" Width="818" StateChanged="MainWindow_StateChanged" Icon="notifReminder.png">
+	<Grid Name="grid_MainWindow" Margin="0,0,0,12">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="120*"/>
 			<ColumnDefinition Width="33*"/>
@@ -71,10 +71,16 @@
 					<ListBox Name="listBox_ActiveNotifs" Panel.ZIndex="3"/>
 				</Grid>
 			</Canvas>
+			<Button x:Name="button_Tasklist_1_ShowLinkedDoc" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="62,73,0,0" VerticalAlignment="Top" Height="13" Width="17" Click="button_Tasklist_ShowLinkedDoc_Click"/>
+			<Button x:Name="button_Tasklist_2_ShowLinkedDoc" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="65,122,0,0" VerticalAlignment="Top" Height="12" Width="17" Click="button_Tasklist_ShowLinkedDoc_Click"/>
+			<Button x:Name="button_Tasklist_3_ShowLinkedDoc" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="65,177,0,0" VerticalAlignment="Top" Height="13" Width="17" Click="button_Tasklist_ShowLinkedDoc_Click"/>
+			<Button x:Name="button_Tasklist_4_ShowLinkedDoc" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="65,226,0,0" VerticalAlignment="Top" Height="12" Width="17" Click="button_Tasklist_ShowLinkedDoc_Click"/>
+			<Button x:Name="button_Tasklist_5_ShowLinkedDoc" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="65,280,0,0" VerticalAlignment="Top" Height="12" Width="17" Click="button_Tasklist_ShowLinkedDoc_Click"/>
 		</Grid>
 		<CheckBox x:Name="checkBox_DekstopElNumberTracking" Content="Мониторить раб. стол" HorizontalAlignment="Left" Margin="79,19,0,0" VerticalAlignment="Top" Checked="checkBox_DekstopElNumberTracking_Checked" Unchecked="checkBox_DekstopElNumberTracking_Unchecked"/>
 		<Label x:Name="label_Desktop_NumberOfFiles" Content="*...*" HorizontalAlignment="Left" Margin="226,14,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
 		<ComboBox x:Name="combobox_DesktopNumber" HorizontalAlignment="Left" Margin="23,16,0,0" VerticalAlignment="Top" Width="42"/>
 		<Button x:Name="button_clearNotifications" Content="ClrNotifs" Grid.Column="2" HorizontalAlignment="Left" Margin="109,88,0,0" VerticalAlignment="Top" Click="button_ClearNotifications_Click"/>
+		<Button Name="button_Search" Content="Search" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Click="button_Search_Click"/>
 	</Grid>
 </Window>
