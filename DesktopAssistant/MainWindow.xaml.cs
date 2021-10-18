@@ -606,7 +606,7 @@ namespace DesktopAssistant
 
 			for (int i = 1; i <= 5; i++)
 			{
-				if(control.Name == $"button_Tasklist_{i}_ShowLinkedDoc")
+				if (control.Name == $"button_Tasklist_{i}_ShowLinkedDoc")
 					if (docsWindow == null)
 					{
 						docsWindow = new LinkDocumentToTasklistWindow();
@@ -621,15 +621,11 @@ namespace DesktopAssistant
 			}
 
 
-			// 1 Логика выбора файла, файл должен храниться в каком-то объекте
-			// 2 Сопоставление объекта файла с кнопкой по номеру таскбара, привязка (возможно словарь)
-
-
 			//for (int i = 1; i <= 5; i++)
 			//{
 			//	if((int)docsWindow.label_taskListNumber.Content == i)
 			//	{
-					
+
 			//	}
 			//}
 

@@ -8,10 +8,10 @@
         Title="LinkDocumentToTasklistWindow" Height="200" Width="259">
 	<Grid>
 		<Label x:Name="label_taskListNumber" Content="*Номер тасклиста*" HorizontalAlignment="Center" Margin="0,22,0,0" VerticalAlignment="Top"/>
-		<Label x:Name="label_docName" Content="*Название документа*" HorizontalAlignment="Left" Margin="20,105,0,0" VerticalAlignment="Top"/>
+		<Label x:Name="label_LinkedDocName" Content="*Название документа*" HorizontalAlignment="Left" Margin="20,105,0,0" VerticalAlignment="Top"/>
 		<Label Content="Привязанный документ:" HorizontalAlignment="Left" Margin="15,67,0,0" VerticalAlignment="Top"/>
-		<Button x:Name="button_LinkDoc" Content="Link" HorizontalAlignment="Left" Margin="159,91,0,0" VerticalAlignment="Top" Width="33"/>
-		<Button x:Name="button_OpenDoc" Content="OpenDoc" HorizontalAlignment="Left" Margin="159,123,0,0" VerticalAlignment="Top" Width="33"/>
+		<Button x:Name="button_LinkDoc" Content="Link" HorizontalAlignment="Left" Margin="159,91,0,0" VerticalAlignment="Top" Width="33" Click="button_LinkDoc_Click"/>
+		<Button x:Name="button_OpenDoc" Content="OpenDoc" HorizontalAlignment="Left" Margin="159,123,0,0" VerticalAlignment="Top" Width="33" Click="button_OpenDoc_Click"/>
 
 	</Grid>
 </Window>
