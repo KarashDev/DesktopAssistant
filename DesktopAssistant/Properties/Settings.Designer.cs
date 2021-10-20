@@ -213,5 +213,17 @@ namespace DesktopAssistant.Properties {
                 this["ListOfNotifications"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FilesByTaskbars_InString {
+            get {
+                return ((string)(this["FilesByTaskbars_InString"]));
+            }
+            set {
+                this["FilesByTaskbars_InString"] = value;
+            }
+        }
     }
 }

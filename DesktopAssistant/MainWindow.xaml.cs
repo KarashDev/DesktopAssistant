@@ -607,17 +607,11 @@ namespace DesktopAssistant
 			for (int i = 1; i <= 5; i++)
 			{
 				if (control.Name == $"button_Tasklist_{i}_ShowLinkedDoc")
-					if (docsWindow == null)
-					{
-						docsWindow = new LinkDocumentToTasklistWindow();
-						docsWindow.label_taskListNumber.Content = $"Номер таска :{i}";
-						docsWindow.Show();
-					}
-					else
-					{
-						docsWindow.label_taskListNumber.Content = $"Номер таска :{i}";
-						docsWindow.Show();
-					}
+				{
+					docsWindow = new LinkDocumentToTasklistWindow(i);
+					//docsWindow.label_taskListNumber.Content = $"Окно задачи: {i}";
+					docsWindow.Show();
+				}
 			}
 
 

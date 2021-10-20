@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopAssistant"
         mc:Ignorable="d"
-        Title="LinkDocumentToTasklistWindow" Height="200" Width="259">
+        Title="LinkDocumentToTasklistWindow" Height="200" Width="259" Closing="TasklistDocumentWindow_Closing">
 	<Grid>
-		<Label x:Name="label_taskListNumber" Content="*Номер тасклиста*" HorizontalAlignment="Center" Margin="0,22,0,0" VerticalAlignment="Top"/>
+		<Label x:Name="label_taskListNumber" Content="0" HorizontalAlignment="Center" Margin="0,22,0,0" VerticalAlignment="Top"/>
 		<Label x:Name="label_LinkedDocName" Content="*Название документа*" HorizontalAlignment="Left" Margin="20,105,0,0" VerticalAlignment="Top"/>
 		<Label Content="Привязанный документ:" HorizontalAlignment="Left" Margin="15,67,0,0" VerticalAlignment="Top"/>
 		<Button x:Name="button_LinkDoc" Content="Link" HorizontalAlignment="Left" Margin="159,91,0,0" VerticalAlignment="Top" Width="33" Click="button_LinkDoc_Click"/>
 		<Button x:Name="button_OpenDoc" Content="OpenDoc" HorizontalAlignment="Left" Margin="159,123,0,0" VerticalAlignment="Top" Width="33" Click="button_OpenDoc_Click"/>
+		<Button x:Name="button_HideWindow" Content="Hide" HorizontalAlignment="Left" Margin="209,15,0,0" VerticalAlignment="Top" Click="button_HideWindow_Click"/>
 
 	</Grid>
 </Window>
