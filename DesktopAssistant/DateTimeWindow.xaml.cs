@@ -22,17 +22,17 @@ namespace DesktopAssistant
 
 			ShowInTaskbar = false;
 
-			// Этот код убирает окно из таскбара alt-tab. Это костыль, однако другого рабочего способа не найдено.
-			Window helperWindow = new Window(); // Create helper window
-			helperWindow.Top = -100; // Location of new window is outside of visible part of screen
+			// Этот код убирает окно из таскбара alt-tab. Это костыль, однако другого рабочего способа не найдено
+			Window helperWindow = new Window(); 
+			helperWindow.Top = -100; 
 			helperWindow.Left = -100;
-			helperWindow.Width = 1; // size of window is enough small to avoid its appearance at the beginning
+			helperWindow.Width = 1; 
 			helperWindow.Height = 1;
-			helperWindow.WindowStyle = WindowStyle.ToolWindow; // Set window style as ToolWindow to avoid its icon in AltTab 
+			helperWindow.WindowStyle = WindowStyle.ToolWindow; 
 			helperWindow.ShowInTaskbar = false;
-			helperWindow.Show(); // We need to show window before set is as owner to our main window
-			this.Owner = helperWindow; // Okey, this will result to disappear icon for main window.
-			helperWindow.Hide(); // Hide helper window just in case
+			helperWindow.Show(); 
+			this.Owner = helperWindow; 
+			helperWindow.Hide(); 
 		}
 
 		public async Task CreateDateTimeWindow()
@@ -74,28 +74,24 @@ namespace DesktopAssistant
 					WeatherDataHandler.GetApiJsonData();
 				};
 				oneHourTimer.Start();
-
-				// Если запрос API сработал без exeption, однако не вернул данные - отдельная проверка
-				if (WeatherDataHandler.temp_max != 0 && WeatherDataHandler.temp_min != 0)
-				{
-					label_maxTempToday.Content = $"Max temp : {WeatherDataHandler.temp_max} °C";
-					label_minTempToday.Content = $"Min temp : {WeatherDataHandler.temp_min} °C";
-				}
-				else
-				{
-					label_maxTempToday.Content = "*no weather data*";
-					label_minTempToday.Content = $"";
-				}
+			}
+			catch (QueueExeption)
+			{
+				label_maxTempToday.Content = "*Api returned nulls*";
+				label_minTempToday.Content = $"";
 			}
 			catch (Exception)
 			{
-				label_maxTempToday.Content = "*error loading data*";
+				label_maxTempToday.Content = "*Api does not respond*";
 				label_minTempToday.Content = $"";
 			}
 		}
 
-		// При нажатии кнопки на окошко, если главное окно было свернуто, оно разворачивается +
-		// снова отображается в таскбаре alt-tab
+		/// <summary>
+		/// При нажатии кнопки на окошко, если главное окно было свернуто, оно разворачивается + снова отображается в таскбаре alt-tab
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (isMainFormHidden)

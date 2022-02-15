@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace DesktopAssistant.API_weather_response
 {
+    /// <summary>
+    /// Класс-хранилище для методов и полей, связанных с запросами к API
+    /// </summary>
     static class WeatherDataHandler
     {
         // Написано под десериализацию JSON с API Яндекс Погода
@@ -66,6 +69,12 @@ namespace DesktopAssistant.API_weather_response
             temp_max = weatherResponse.forecast.parts[0].temp_max;
             // [1] - это данные ночью (не днем)
             temp_min = weatherResponse.forecast.parts[1].temp_min;
+
+
+            if (WeatherDataHandler.temp_max == 0 && WeatherDataHandler.temp_min == 0)
+            {
+                throw new QueueExeption();
+            }
         }
 
         // На случай, если API присылает XML
